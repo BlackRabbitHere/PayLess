@@ -13,6 +13,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterAll;
@@ -89,6 +90,115 @@ class ScraperIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).contains("\"backend\":\"UP\"", "\"status\":\"UP\"", "\"mode\":\"fixture\"");
         assertThat(calls.get()).isEqualTo(1);
+    }
+
+    @Test
+    void optimizationEndpointCompletesTypoQueryWithWalletCostsStepsSourcesAndWarnings() throws Exception {
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "I am spending 500 rs on swigy", "wallet", List.of(
+                Map.of("issuer", "HDFC", "productName", "Millennia", "instrumentType", "CREDIT_CARD", "network", "VISA"))), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        var result = json.readTree(response.getBody());
+        assertThat(result.at("/context/merchant").asText()).isEqualTo("SWIGGY");
+        assertThat(result.at("/bestEffectiveCostRoute/cost/payNow").decimalValue()).isEqualByComparingTo("487.50");
+        assertThat(result.at("/bestEffectiveCostRoute/cost/effectiveCost").decimalValue()).isEqualByComparingTo("487.50");
+        assertThat(result.at("/bestEffectiveCostRoute/cost/saving").decimalValue()).isEqualByComparingTo("12.50");
+        assertThat(result.at("/bestPayNowRoute/cost/payNow").decimalValue()).isEqualByComparingTo("487.50");
+        assertThat(result.at("/bestEffectiveCostRoute/steps").size()).isEqualTo(4);
+        assertThat(result.at("/bestEffectiveCostRoute/steps/0/actionUrl").asText()).isEqualTo("https://www.gyftr.com/swiggy-money");
+        assertThat(result.at("/bestEffectiveCostRoute/sources/0/fixture").asBoolean()).isTrue();
+        assertThat(result.at("/bestEffectiveCostRoute/sources/0/contentHash").asText()).hasSize(64);
+        assertThat(result.at("/alternatives").size()).isEqualTo(3);
+        assertThat(result.at("/warnings").size()).isPositive();
+        assertThat(lastRequest.get()).contains("\"forceRefresh\":false");
+    }
+
+    @ParameterizedTest
+    @CsvSource({"503", "502", "500"})
+    void optimizationSurvivesCompleteScraperOutage(int upstreamStatus) throws Exception {
+        status.set(upstreamStatus); body.set("{\"detail\":\"private failure\"}");
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "I am spending 500 rs on swigy"), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        var result = json.readTree(response.getBody());
+        assertThat(result.at("/bestEffectiveCostRoute/kind").asText()).isEqualTo("DIRECT");
+        assertThat(result.at("/bestEffectiveCostRoute/cost/payNow").decimalValue()).isEqualByComparingTo("500.00");
+        assertThat(result.at("/bestEffectiveCostRoute/cost/saving").decimalValue()).isEqualByComparingTo("0.00");
+        assertThat(response.getBody()).contains("Live offer acquisition unavailable").doesNotContain("private failure");
+        assertThat(calls.get()).isEqualTo(1);
+    }
+
+    @Test
+    void curlCompletesThePhaseThreeHttpCheckpoint() throws Exception {
+        var directory = java.nio.file.Path.of("../data/verification/phase3").toAbsolutePath().normalize();
+        java.nio.file.Files.createDirectories(directory);
+        var request = directory.resolve("request.json");
+        java.nio.file.Files.writeString(request, """
+                {"query":"I am spending 500 rs on swigy","wallet":[
+                  {"issuer":"HDFC","productName":"Millennia","instrumentType":"CREDIT_CARD","network":"VISA"}
+                ]}
+                """);
+        var output = directory.resolve("curl-response.json");
+        var error = directory.resolve("curl-stderr.txt");
+        var curl = System.getProperty("os.name").toLowerCase(java.util.Locale.ROOT).contains("windows") ? "curl.exe" : "curl";
+        var process = new ProcessBuilder(curl, "--silent", "--show-error", "--fail-with-body", "--max-time", "15",
+                "--noproxy", "*", "-H", "Content-Type: application/json", "--data-binary", "@" + request,
+                "--output", output.toString(), http.getRootUri() + "/api/optimize/query")
+                .redirectError(error.toFile()).start();
+        if (!process.waitFor(20, java.util.concurrent.TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            throw new AssertionError("curl checkpoint timed out");
+        }
+        assertThat(process.exitValue()).withFailMessage(java.nio.file.Files.readString(error)).isZero();
+        var result = json.readTree(output.toFile());
+        assertThat(result.at("/bestEffectiveCostRoute/cost/effectiveCost").decimalValue()).isEqualByComparingTo("487.50");
+        assertThat(result.at("/bestPayNowRoute/cost/payNow").decimalValue()).isEqualByComparingTo("487.50");
+        assertThat(result.at("/alternatives").size()).isEqualTo(3);
+        assertThat(result.at("/bestEffectiveCostRoute/steps").size()).isEqualTo(4);
+        assertThat(result.at("/sources/0/fixture").asBoolean()).isTrue();
+        assertThat(result.at("/warnings").size()).isPositive();
+    }
+
+    @Test
+    void optimizationRejectsVerifiedButIneligibleOffersAndKeepsDirectRoutes() throws Exception {
+        body.set(body.get().replace("\"usageLimit\": null", "\"usageLimit\": \"Once per card.\""));
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy"), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("USAGE_RULE_UNCONFIRMED");
+        assertThat(json.readTree(response.getBody()).at("/bestEffectiveCostRoute/kind").asText()).isEqualTo("DIRECT");
+    }
+
+    @ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"cardNumber", "cvv", "pin", "otp", "bankCredentials", "redirectUrl"})
+    void optimizationRejectsSensitiveOrRedirectFieldsAtBothRequestLevels(String field) {
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy", field, "not-allowed"), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        var instrument = new java.util.HashMap<String, Object>(Map.of("issuer", "HDFC", "productName", "Millennia",
+                "instrumentType", "CREDIT_CARD", "network", "VISA"));
+        instrument.put(field, "not-allowed");
+        response = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy", "wallet", List.of(instrument)), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).doesNotContain("not-allowed");
+        assertThat(calls.get()).isZero();
+    }
+
+    @ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"4111111111111111", "4111 1111 1111 1111", "4111-1111-1111-1111"})
+    void optimizationRejectsInvalidWalletOrQueryBeforeAcquisition(String product) {
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy", "wallet", List.of(
+                Map.of("issuer", "HDFC", "productName", product, "instrumentType", "CREDIT_CARD", "network", "VISA"))), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        response = http.postForEntity("/api/optimize/query", Map.of("query", "500 or 600 on swigy"), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(calls.get()).isZero();
+    }
+
+    @Test
+    void optimizationIgnoresScrapedActionUrlAndPreservesPartialDiagnostics() {
+        body.set(body.get().replace("\"actionUrl\": \"https://www.gyftr.com/swiggy-money\"", "\"actionUrl\": \"https://evil.example/redirect\"")
+                .replace("\"SUCCESS\"", "\"PARTIAL\"")
+                .replace("\"errors\": []", "\"errors\": [{\"code\":\"READ_TIMEOUT\",\"message\":\"Timed out\",\"provider\":\"GYFTR\",\"retryable\":true}]"));
+        var response = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy"), String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("READ_TIMEOUT", "https://www.gyftr.com/swiggy-money").doesNotContain("evil.example");
     }
 
     @ParameterizedTest

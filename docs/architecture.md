@@ -1,4 +1,4 @@
-# Application architecture through Phase 2
+# Application architecture through Phase 3
 
 The workspace root is the payment-optimizer monorepo (its local directory name may differ).
 The frozen scraper was relocated from `Scrapper/scraper` to `scraper` without source or contract edits.
@@ -51,7 +51,8 @@ Existing unit and browser tests protect the retained demo behavior.
 - Frozen scraper contract: `scraper/docs/api-contract.md` and `scraper/docs/spring-boot-integration.md`.
 
 The default read timeout is 30 seconds. Live scraper operations use the frozen scraper's recommended 180-second background budget;
-override SCRAPER_READ_TIMEOUT explicitly for the acquisition checkpoint. User search never triggers live scraping.
+override SCRAPER_READ_TIMEOUT explicitly for the acquisition checkpoint. The React demo never triggers live scraping.
+The Phase 3 backend optimization endpoint requests acquisition without force refresh; the scraper may fetch on a cache miss.
 
 ## Phase 2 boundary
 
@@ -81,3 +82,19 @@ It accepts `{sentence, forceRefresh}` and returns `{context, acquisition}` with 
 It performs synchronous acquisition to prove the requested boundary. The React demo is not connected to it;
 production refresh scheduling, caching policy, eligibility, route generation and optimization remain future work.
 See [Phase 2 verification](phase2-verification.md) for the genuine GyFTR checkpoint and reproduction commands.
+
+## Phase 3 application flow
+
+`OptimizationController -> OptimizationService -> QueryUnderstandingService -> PurchaseContext -> OfferAcquisitionService`
+`-> OfferEligibilityService -> RouteGenerator -> CostCalculator -> PaymentRouteOptimizer -> RouteStepBuilder`
+`-> RedirectSafetyValidator -> OptimizeResponse`.
+
+The new endpoint is `POST /api/optimize/query`. The controller only validates, delegates and returns an HTTP response.
+Wallet values are metadata only, scoped to the request. Unknown input properties are rejected at this boundary even though
+the frozen scraper adapter tolerates unknown wire properties. Business time is provided by an injectable UTC Clock.
+Offer acquisition isolates failures per configured provider, preserves partial diagnostics, and does not force refresh.
+Only calculated routes enter the optimizer. BigDecimal monetary arithmetic belongs exclusively to CostCalculator;
+ArchUnit guards controller dependencies and monetary arithmetic placement.
+Redirect actions are generated from a closed backend catalog and validated against exact approved HTTPS destinations.
+Source metadata retains verification timestamps, hashes, terms and fixture markers independently of purchase eligibility.
+React remains unchanged. See [Phase 3 verification and rules](phase3-verification.md) for the supported scope and curl checkpoint.

@@ -1,4 +1,4 @@
-# Payment Optimizer — Phase 2
+# Payment Optimizer — Phase 3
 
 React + TypeScript + Vite + Tailwind, Spring Boot MVC (Java 21), and the frozen FastAPI scraper.
 The existing Routewise demo UI is retained and refactored into feature modules. No PostgreSQL or backend persistence is introduced.
@@ -144,3 +144,17 @@ To run the genuine integration check against FastAPI on port 8000 (live mode):
 
 This starts an isolated Spring test server, rejects fixtures, checks the actual GyFTR response,
 and verifies cache/force-refresh semantics. See [Phase 2 verification](docs/phase2-verification.md).
+
+## Phase 3: optimization engine
+
+`POST /api/optimize/query` now runs query understanding, offer acquisition, eligibility, route generation,
+decimal cost calculation, deterministic ranking, actionable steps and redirect validation inside Spring.
+The optional wallet contains payment metadata only. Responses distinguish pay-now from effective cost and include
+both winning routes, alternatives, source metadata, eligibility reasons and warnings. Provider outages retain direct routes.
+
+```powershell
+curl.exe --fail-with-body -H "Content-Type: application/json" --data-binary "@docs/phase3-request.json" http://localhost:8080/api/optimize/query
+```
+
+See [Phase 3 API and verification](docs/phase3-verification.md) for the request contract, reproducible checkpoint and supported business rules.
+The React demo is unchanged.

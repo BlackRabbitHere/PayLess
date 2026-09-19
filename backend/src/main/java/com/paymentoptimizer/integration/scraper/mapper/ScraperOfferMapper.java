@@ -85,7 +85,7 @@ public class ScraperOfferMapper {
         var discount = new Offer.Discount(offer.discount().type(), offer.discount().value(), offer.discount().maximumDiscount());
         return new Offer(offer.externalKey(), offer.provider(), offer.merchant(), offer.title(),
                 offer.offerType(), offer.transactionMode(), voucher, discount, offer.minimumTransaction(),
-                List.copyOf(offer.eligibleIssuers()), List.copyOf(offer.eligibleInstrumentTypes()), offer.promoCode(),
+                List.copyOf(offer.eligibleIssuers()), List.copyOf(offer.eligibleInstrumentTypes()), List.of(), offer.promoCode(),
                 offer.validFrom(), offer.validUntil(), offer.usageLimit(), offer.stackingPolicy(), List.copyOf(offer.terms()),
                 offer.availability(), offer.sourceUrl(), offer.actionUrl(), offer.actionLabel(),
                 offer.verificationStatus(), offer.lastVerifiedAt(), offer.scrapedAt(), offer.contentHash());

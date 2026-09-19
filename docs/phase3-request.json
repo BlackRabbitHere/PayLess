@@ -1,0 +1,11 @@
+{
+  "query": "I am spending 500 rs on swigy",
+  "wallet": [
+    {
+      "issuer": "HDFC",
+      "productName": "Millennia",
+      "instrumentType": "CREDIT_CARD",
+      "network": "VISA"
+    }
+  ]
+}
