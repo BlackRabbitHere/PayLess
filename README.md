@@ -1,4 +1,4 @@
-# Payment Optimizer — Phase 3
+# Payment Optimizer — Phase 4
 
 React + TypeScript + Vite + Tailwind, Spring Boot MVC (Java 21), and the frozen FastAPI scraper.
 The existing Routewise demo UI is retained and refactored into feature modules. No PostgreSQL or backend persistence is introduced.
@@ -114,7 +114,7 @@ npm run test:e2e
 ```
 
 The smoke script expects all three local services running and checks all three provider mappings.
-The browser suite uses installed Google Chrome and starts/reuses Vite on 5173.
+The browser suite uses installed Google Chrome and starts isolated Vite on 15173, Spring on 18080, and a scraper fixture replay on 18000.
 The backend tests start a controlled HTTP server and do not depend on internet providers.
 
 See [architecture](docs/architecture.md) for module boundaries and deferred responsibilities,
@@ -157,4 +157,14 @@ curl.exe --fail-with-body -H "Content-Type: application/json" --data-binary "@do
 ```
 
 See [Phase 3 API and verification](docs/phase3-verification.md) for the request contract, reproducible checkpoint and supported business rules.
-The React demo is unchanged.
+The React UI now consumes this endpoint. See Phase 4 below.
+
+## Phase 4: complete merchant and travel journeys
+
+Home now submits purchases to Spring and renders real optimization responses, including costs, steps, safe links,
+eligibility exclusions, and partial/total offer failures. Zustand persists wallet metadata only.
+Travel at /travel uses a FareProvider port with labeled DemoFareProvider quotes and the same Spring optimization engine.
+
+Browser checkpoints cover Swiggy ₹500 → ₹487.50 voucher route and Delhi → Mumbai → fares, offers, wallet and ranked routes.
+Browser verification uses the real Spring application with committed synthetic scraper wire fixtures.
+See [Phase 4 contracts and verification](docs/phase4-verification.md) and [frontend guide](frontend/README.md).

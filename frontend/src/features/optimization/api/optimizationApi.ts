@@ -1,4 +1,11 @@
 import { requestJson } from '../../../shared/api/httpClient'
+import type { OptimizationRequest, OptimizeResponse } from '../model/contracts'
+
+export const optimizationApi = {
+  optimize: (request: OptimizationRequest, signal?: AbortSignal) => requestJson<OptimizeResponse>('/api/optimize/query', {
+    method: 'POST', body: JSON.stringify(request), signal,
+  }),
+}
 
 export type ScraperPair =
   | { provider: 'GYFTR'; merchant: 'SWIGGY' }

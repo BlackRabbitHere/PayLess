@@ -264,10 +264,10 @@ class ScraperIntegrationTest {
     @Test
     void allowsOnlyConfiguredBrowserOrigins() {
         var headers = new HttpHeaders();
-        headers.setOrigin("http://localhost:5173");
+        headers.setOrigin("http://localhost:4173");//5173
         headers.setAccessControlRequestMethod(HttpMethod.POST);
         var response = http.exchange("/api/v1/optimization/scraper-check", HttpMethod.OPTIONS, new HttpEntity<>(headers), String.class);
-        assertThat(response.getHeaders().getAccessControlAllowOrigin()).isEqualTo("http://localhost:5173");
+        assertThat(response.getHeaders().getAccessControlAllowOrigin()).isEqualTo("http://localhost:4173");//5173
         headers.setOrigin("https://untrusted.example");
         response = http.exchange("/api/v1/optimization/scraper-check", HttpMethod.OPTIONS, new HttpEntity<>(headers), String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);

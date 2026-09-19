@@ -3,9 +3,12 @@ package com.paymentoptimizer.optimization.application;
 import com.paymentoptimizer.offers.application.OfferAcquisitionService;
 import com.paymentoptimizer.offers.domain.*;
 import com.paymentoptimizer.optimization.domain.CalculatedRoute;
+import com.paymentoptimizer.optimization.domain.RouteCandidate;
 import com.paymentoptimizer.optimization.dto.*;
 import com.paymentoptimizer.query.application.QueryUnderstandingService;
 import com.paymentoptimizer.query.domain.PurchaseContext;
+import com.paymentoptimizer.query.domain.Merchant;
+import com.paymentoptimizer.wallet.domain.Wallet;
 import com.paymentoptimizer.redirect.application.RedirectSafetyValidator;
 import java.time.Clock;
 import java.util.*;
@@ -30,7 +33,34 @@ public class OptimizationService {
     }
     public OptimizeResponse optimize(OptimizeRequest request) {
         var context = queries.understand(request.query());
-        var batches = acquisition.acquireAvailable(context);
+        return optimizeOptions(List.of(new PurchaseOption("", context)), request.toWallet()).optimization();
+    }
+
+    /** A priced purchase enters the same engine whether supplied by query parsing or a fare provider. */
+    public record PurchaseOption(String id, PurchaseContext context) {}
+    public record Selection(OptimizeResponse optimization, Map<String, String> routeOptionIds) {}
+
+    public Selection optimizeOptions(List<PurchaseOption> options, Wallet wallet) {
+        if (options.isEmpty()) throw new IllegalArgumentException("At least one priced purchase is required.");
+        var acquired = new LinkedHashMap<Merchant, List<OfferBatch>>();
+        var contexts = new HashMap<String, PurchaseContext>();
+        var optionIds = new LinkedHashMap<String, String>();
+        var candidates = new ArrayList<CalculatedRoute>();
+        var assessments = new ArrayList<RouteGenerator.Assessment>();
+        for (var option : options) {
+            var context = option.context();
+            var sources = acquired.computeIfAbsent(context.merchant(), ignored -> acquisition.acquireAvailable(context));
+            var generated = generator.generate(context, wallet, sources.stream().flatMap(b -> b.offers().stream()).toList(), clock.instant());
+            assessments.addAll(generated.eligibility());
+            for (var candidate : generated.candidates()) {
+                String id = option.id().isEmpty() ? candidate.id() : option.id() + ":" + candidate.id();
+                var identified = new RouteCandidate(id, candidate.kind(), candidate.paymentInstrument(), candidate.offers());
+                candidates.add(costs.calculate(context, identified));
+                contexts.put(id, context);
+                optionIds.put(id, option.id());
+            }
+        }
+        var batches = acquired.values().stream().flatMap(List::stream).toList();
         var warnings = new ArrayList<String>();
         if (batches.stream().allMatch(b -> "UNAVAILABLE".equals(b.status()))) {
             warnings.add("Live offer acquisition unavailable. Direct payment routes are still returned.");
@@ -40,17 +70,17 @@ public class OptimizationService {
             batch.warnings().forEach(w -> warnings.add(w.code() + ": " + w.message()));
             batch.errors().forEach(e -> warnings.add(e.code() + ": Offer acquisition incomplete for " + batch.provider() + "."));
         }
-        var offers = batches.stream().flatMap(b -> b.offers().stream()).toList();
-        var generated = generator.generate(context, request.toWallet(), offers, clock.instant());
-        var ranked = optimizer.rank(generated.candidates().stream().map(r -> costs.calculate(context, r)).toList());
-        if (generated.eligibility().stream().anyMatch(a -> !a.result().eligible())) {
+        var ranked = optimizer.rank(candidates);
+        if (assessments.stream().anyMatch(a -> !a.result().eligible())) {
             warnings.add("Some verified offers are ineligible or have unconfirmed restrictions; see eligibility reasons.");
         }
         warnings.add("Direct payment assumes UPI is available and that the supplied wallet metadata is accurate. No unpriced fees or wallet rewards are assumed.");
-        return new OptimizeResponse(context, "INR", present(context, ranked.bestEffectiveCostRoute(), batches),
-                present(context, ranked.bestPayNowRoute(), batches), ranked.alternatives().stream().map(r -> present(context, r, batches)).toList(),
-                generated.eligibility(), batches.stream().map(b -> new OptimizeResponse.Acquisition(b.requestId(), b.provider(), b.status(),
-                        b.fixture(), b.warnings(), b.errors())).toList(), warnings.stream().distinct().toList());
+        var context = contexts.get(ranked.bestEffectiveCostRoute().candidate().id());
+        return new Selection(new OptimizeResponse(context, "INR", present(context, ranked.bestEffectiveCostRoute(), batches),
+                present(contexts.get(ranked.bestPayNowRoute().candidate().id()), ranked.bestPayNowRoute(), batches),
+                ranked.alternatives().stream().map(r -> present(contexts.get(r.candidate().id()), r, batches)).toList(),
+                assessments.stream().distinct().toList(), batches.stream().map(b -> new OptimizeResponse.Acquisition(b.requestId(), b.provider(), b.status(),
+                        b.fixture(), b.warnings(), b.errors())).toList(), warnings.stream().distinct().toList()), Map.copyOf(optionIds));
     }
     private OptimizeResponse.Route present(PurchaseContext context, CalculatedRoute route, List<OfferBatch> batches) {
         var warnings = new ArrayList<String>();

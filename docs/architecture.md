@@ -1,4 +1,4 @@
-# Application architecture through Phase 3
+# Application architecture through Phase 4
 
 The workspace root is the payment-optimizer monorepo (its local directory name may differ).
 The frozen scraper was relocated from `Scrapper/scraper` to `scraper` without source or contract edits.
@@ -29,20 +29,18 @@ Fixture use is explicit and rejected under the production profile.
 
 ## React
 
-The existing Routewise demo UI is retained by request.
-`app/router` composes routes, `app/providers` owns shared demo context, and `app/config` reads environment settings.
-`features/optimization` owns the search/results views, controller hooks, model, state and backend probe API.
-`features/wallet` owns wallet views, controllers and model operations.
-`features/travel/model` retains flight fixtures. Query understanding and redirect safety have their own feature models.
-`shared/api/httpClient.ts` is the only fetch transport; components never call fetch or Axios directly.
+Home and Travel forms call feature controllers; Results renders Spring DTOs directly.
+useOptimizationController owns query, wallet selection, submission, cancellation, response, loading, error and reset.
+OptimizationProvider shares that controller between the feature's routes. API state is not global or persisted.
+Zustand persists selected wallet metadata only; recent searches are session state.
+optimizationApi.optimize() and travelApi.optimize() use shared/api/httpClient.ts exclusively against Spring.
+No view imports network transports and no browser calls FastAPI.
+The older demo calculation fixtures remain isolated for historical unit tests.
 
-Existing financial calculations, ranking and parsing remain explicitly demo model code.
-No new production optimization behavior was implemented. Demo searches continue to use local fixtures,
-and demo wallet/history remain in browser localStorage. Backend observations are not mixed into demo rankings.
-The separate `/system` screen checks the API path and reports fixture/live mode honestly.
-
-Frontend boundary tests guard direct HTTP calls in views and prevent views from importing the calculation/parser implementations.
-Existing unit and browser tests protect the retained demo behavior.
+TravelController -> TravelService -> FareProvider (initially DemoFareProvider) -> priced PurchaseContext options ->
+OptimizationService -> OfferAcquisitionService + shared eligibility, RouteGenerator, CostCalculator and PaymentRouteOptimizer.
+Offers are acquired once per merchant; each route retains the fare id and correct merchant checkout actions.
+All money and optimization decisions stay in Spring. See [Phase 4 verification](phase4-verification.md).
 
 ## References
 
@@ -51,8 +49,8 @@ Existing unit and browser tests protect the retained demo behavior.
 - Frozen scraper contract: `scraper/docs/api-contract.md` and `scraper/docs/spring-boot-integration.md`.
 
 The default read timeout is 30 seconds. Live scraper operations use the frozen scraper's recommended 180-second background budget;
-override SCRAPER_READ_TIMEOUT explicitly for the acquisition checkpoint. The React demo never triggers live scraping.
-The Phase 3 backend optimization endpoint requests acquisition without force refresh; the scraper may fetch on a cache miss.
+override SCRAPER_READ_TIMEOUT explicitly for the acquisition checkpoint. React triggers Spring optimization, which may acquire offers through the scraper.
+The backend optimization endpoint requests acquisition without force refresh; the scraper may fetch on a cache miss.
 
 ## Phase 2 boundary
 

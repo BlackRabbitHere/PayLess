@@ -6,7 +6,7 @@ export class ApiError extends Error {
 }
 
 export async function requestJson<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const timeout = AbortSignal.timeout(35_000)
+  const timeout = AbortSignal.timeout(75_000)
   const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout
   let response: Response
   try {
