@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "status": "SUCCESS",
+  "provider": "GYFTR",
+  "merchant": "SWIGGY",
+  "startedAt": "2026-09-18T16:30:00Z",
+  "completedAt": "2026-09-18T16:30:00Z",
+  "offers": [
+    {
+      "schemaVersion": 1,
+      "externalKey": "GYFTR-SWIGGY-8b5fcbf6bb49504399a5b5f8",
+      "provider": "GYFTR",
+      "merchant": "SWIGGY",
+      "title": "Swiggy Money Voucher",
+      "offerType": "VOUCHER_DISCOUNT",
+      "transactionMode": "VOUCHER",
+      "voucher": {
+        "faceValue": "500.00",
+        "sellingPrice": "487.50"
+      },
+      "discount": {
+        "type": "PERCENTAGE",
+        "value": "2.50",
+        "maximumDiscount": null
+      },
+      "minimumTransaction": null,
+      "eligibleIssuers": [],
+      "eligibleInstrumentTypes": [],
+      "promoCode": null,
+      "validFrom": null,
+      "validUntil": null,
+      "usageLimit": null,
+      "stackingPolicy": "UNKNOWN",
+      "terms": [
+        "Redeem on Swiggy Money.",
+        "Fixture terms only."
+      ],
+      "availability": "AVAILABLE",
+      "sourceUrl": "https://www.gyftr.com/swiggy-money",
+      "actionUrl": "https://www.gyftr.com/swiggy-money",
+      "actionLabel": "Buy Voucher",
+      "verificationStatus": "VERIFIED",
+      "lastVerifiedAt": "2026-09-18T16:30:00Z",
+      "scrapedAt": "2026-09-18T16:30:00Z",
+      "contentHash": "269b47d1d6598ec15f30095b13e6691ddf985c46287bf06f0c5838ec13345261"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "FIXTURE_DATA",
+      "message": "Synthetic fixture data; not a live commercial offer.",
+      "externalKey": null
+    }
+  ],
+  "errors": [],
+  "metadata": {
+    "cacheHit": false,
+    "fetchMethod": "FIXTURE",
+    "offersFound": 1,
+    "offersExcluded": 0,
+    "fixture": true
+  }
+}

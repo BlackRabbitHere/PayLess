@@ -1,0 +1,12 @@
+{
+  "capturedFromLive": true,
+  "captureDate": "2026-09-19T02:17:19.494215+00:00",
+  "provider": "GYFTR",
+  "sourceUrl": "https://www.gyftr.com/swiggy-gv",
+  "sourceHash": "af78ebadafa1c20c18457f50ae1bcb316854afe1e8c3ab9909dd5d3cab2cd038",
+  "hash": "ff0a0aa6ae5dd6296df5d7fbb224166cb2a81d50e39b3919b068a8c8d7b8320b",
+  "rawSnapshot": "data\\raw\\gyftr\\swiggy\\20260919T021719494215Z_af78ebadafa1c20c.html",
+  "fetchMethod": "HTTP",
+  "requestId": "2802f6e5-bcd2-4ea5-94be-e0acee8a77f6",
+  "sanitization": "Removed executable scripts, forms, input, iframe and event attributes."
+}

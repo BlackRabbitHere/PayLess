@@ -1,0 +1,375 @@
+{
+  "$defs": {
+    "Availability": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "UNKNOWN"
+      ],
+      "title": "Availability",
+      "type": "string"
+    },
+    "Discount": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/DiscountType",
+          "default": "UNKNOWN"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "decimal_places": 6,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "maximumDiscount": {
+          "anyOf": [
+            {
+              "decimal_places": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximumdiscount"
+        }
+      },
+      "title": "Discount",
+      "type": "object"
+    },
+    "DiscountType": {
+      "enum": [
+        "PERCENTAGE",
+        "FLAT",
+        "CASHBACK",
+        "VARIABLE",
+        "UNKNOWN"
+      ],
+      "title": "DiscountType",
+      "type": "string"
+    },
+    "OfferType": {
+      "enum": [
+        "VOUCHER_DISCOUNT",
+        "INSTANT_DISCOUNT",
+        "CASHBACK",
+        "COUPON",
+        "BANK_OFFER",
+        "PAYMENT_METHOD_DISCOUNT",
+        "UNKNOWN"
+      ],
+      "title": "OfferType",
+      "type": "string"
+    },
+    "ProviderId": {
+      "enum": [
+        "GYFTR",
+        "YATRA",
+        "EASEMYTRIP"
+      ],
+      "title": "ProviderId",
+      "type": "string"
+    },
+    "StackingPolicy": {
+      "enum": [
+        "ALLOWED",
+        "NOT_ALLOWED",
+        "UNKNOWN"
+      ],
+      "title": "StackingPolicy",
+      "type": "string"
+    },
+    "TransactionMode": {
+      "enum": [
+        "VOUCHER",
+        "CREDIT_CARD",
+        "DEBIT_CARD",
+        "CARD",
+        "UPI",
+        "EMI",
+        "NET_BANKING",
+        "WALLET",
+        "UNKNOWN"
+      ],
+      "title": "TransactionMode",
+      "type": "string"
+    },
+    "VerificationStatus": {
+      "enum": [
+        "VERIFIED",
+        "AMBIGUOUS",
+        "INCOMPLETE"
+      ],
+      "title": "VerificationStatus",
+      "type": "string"
+    },
+    "Voucher": {
+      "additionalProperties": false,
+      "properties": {
+        "faceValue": {
+          "anyOf": [
+            {
+              "decimal_places": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Facevalue"
+        },
+        "sellingPrice": {
+          "anyOf": [
+            {
+              "decimal_places": 2,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sellingprice"
+        }
+      },
+      "title": "Voucher",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "default": 1,
+      "title": "Schemaversion",
+      "type": "integer"
+    },
+    "externalKey": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Externalkey",
+      "type": "string"
+    },
+    "provider": {
+      "$ref": "#/$defs/ProviderId"
+    },
+    "merchant": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Merchant",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "offerType": {
+      "$ref": "#/$defs/OfferType"
+    },
+    "transactionMode": {
+      "$ref": "#/$defs/TransactionMode",
+      "default": "UNKNOWN"
+    },
+    "voucher": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Voucher"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "discount": {
+      "$ref": "#/$defs/Discount"
+    },
+    "minimumTransaction": {
+      "anyOf": [
+        {
+          "decimal_places": 2,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimumtransaction"
+    },
+    "eligibleIssuers": {
+      "items": {
+        "maxLength": 1000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Eligibleissuers",
+      "type": "array"
+    },
+    "eligibleInstrumentTypes": {
+      "items": {
+        "$ref": "#/$defs/TransactionMode"
+      },
+      "title": "Eligibleinstrumenttypes",
+      "type": "array"
+    },
+    "promoCode": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Promocode"
+    },
+    "validFrom": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Validfrom"
+    },
+    "validUntil": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Validuntil"
+    },
+    "usageLimit": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Usagelimit"
+    },
+    "stackingPolicy": {
+      "$ref": "#/$defs/StackingPolicy",
+      "default": "UNKNOWN"
+    },
+    "terms": {
+      "items": {
+        "maxLength": 1000,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Terms",
+      "type": "array"
+    },
+    "availability": {
+      "$ref": "#/$defs/Availability",
+      "default": "UNKNOWN"
+    },
+    "sourceUrl": {
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "Sourceurl",
+      "type": "string"
+    },
+    "actionUrl": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Actionurl"
+    },
+    "actionLabel": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Actionlabel"
+    },
+    "verificationStatus": {
+      "$ref": "#/$defs/VerificationStatus",
+      "default": "INCOMPLETE"
+    },
+    "lastVerifiedAt": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lastverifiedat"
+    },
+    "scrapedAt": {
+      "format": "date-time",
+      "title": "Scrapedat",
+      "type": "string"
+    },
+    "contentHash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Contenthash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "externalKey",
+    "provider",
+    "merchant",
+    "title",
+    "offerType",
+    "sourceUrl",
+    "scrapedAt",
+    "contentHash"
+  ],
+  "title": "ScrapedOffer",
+  "type": "object"
+}

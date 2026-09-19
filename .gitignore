@@ -1,0 +1,62 @@
+# Machine-only configuration
+.env
+.env.*
+!.env.example
+!frontend/.env
+!frontend/.env.example
+!frontend/.env.development
+!frontend/.env.test
+!frontend/.env.docker
+!frontend/.env.production
+!scraper/.env.example
+
+# Build tools and outputs
+**/node_modules/
+**/dist/
+**/target/
+**/*.tsbuildinfo
+**/.venv/
+**/__pycache__/
+**/*.egg-info/
+**/.pytest_cache/
+**/.ruff_cache/
+**/test-results/
+**/playwright-report/
+# Original machine-local Python runtime retained after source relocation
+/Scrapper/
+/data/runtime/
+/data/verification/
+*.log
+.idea/
+.vscode/
+
+
+
+# ============================================================
+# Scraper runtime / generated data
+# ============================================================
+
+# Local scraper observation database
+/scraper/data/observations.sqlite3
+/scraper/data/*.sqlite3
+/scraper/data/*.sqlite
+/scraper/data/*.db
+
+# Browser binaries downloaded locally
+/scraper/data/browsers/
+
+# Runtime scraper artifacts
+/scraper/data/runtime/
+/scraper/data/cache/
+/scraper/data/tmp/
+
+# Generated live verification output
+/scraper/verification/*.log
+/scraper/verification/docker-diagnostics/
+
+# Generated repository/file-tree output
+/output.txt
+
+
+/scraper/data/raw/
+/scraper/data/diagnostics/

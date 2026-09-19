@@ -1,0 +1,422 @@
+[
+  {
+    "path": ".dockerignore",
+    "sha256": "389433615152d12a76cb43be45e67a02ae81a0c4175a91c6d78e84d4cbf30dd7"
+  },
+  {
+    "path": ".env.example",
+    "sha256": "b7e27d5ba37a66b1d775b4c881720026d0384394b8da7110a752bb4fb7ca83ae"
+  },
+  {
+    "path": ".gitignore",
+    "sha256": "53924ca064a0f14a20ccbb34c0ba4aeccf48e8d3ca7004d455df9759212dfb5a"
+  },
+  {
+    "path": "docker-compose.yml",
+    "sha256": "4cbb9cccd45ebd4f1d19e33901b6466bc1d12c2833f812ebd839d93c9137a837"
+  },
+  {
+    "path": "Dockerfile",
+    "sha256": "35c8b6a44c473353d3b87f0ea7994cc82679f65c11a11fdd8c331af8f91acc81"
+  },
+  {
+    "path": "pyproject.toml",
+    "sha256": "f908e57bded9f9b653827f1993f00aa755649b28452cd320a983f6e39570bc67"
+  },
+  {
+    "path": "README.md",
+    "sha256": "ff05a294eea21f06e88107963b86293598156d2aadab9c3fdb1aff2350526e6d"
+  },
+  {
+    "path": "requirements.lock",
+    "sha256": "9dfacd5482835cbe3fcc9a767cc76df1080bc5113c5dc80e895df127af0a746d"
+  },
+  {
+    "path": "uv.lock",
+    "sha256": "64921ae077fb69349e6e95e055d248078c3a0efa8730ab5106608b96585f6303"
+  },
+  {
+    "path": "contracts/live_easemytrip_example.json",
+    "sha256": "cfa3a5c0e79f803e3881ce63d09c65ea132880c90dd2df3b1b5707d3ed56edf3"
+  },
+  {
+    "path": "contracts/live_gyftr_example.json",
+    "sha256": "1d570914872ce32a5f0aa6736ea37d48396d36716d5d87b1a3b1704b2f23e1a4"
+  },
+  {
+    "path": "contracts/live_yatra_example.json",
+    "sha256": "bf3dd1e8efef1a76b63f6ad48436682ab9fa78f8ba5aeb2dae266324ed78e9ae"
+  },
+  {
+    "path": "contracts/openapi.sha256",
+    "sha256": "49f4811c56beaa562fce85268b98938607aae390c8584fe9a0e06b3c82741b25"
+  },
+  {
+    "path": "contracts/scraped_offer.schema.json",
+    "sha256": "929faee4cc21e46d5adc388c1a810a856712cefb522015178f2b845d0f9097b8"
+  },
+  {
+    "path": "docs/api-contract.md",
+    "sha256": "a6d421b70a66f9a9c46b4f74a402478dc95d6f401c1a30589bcfc2ba49a10e81"
+  },
+  {
+    "path": "docs/architecture.md",
+    "sha256": "e409b51bfb8e9cd275aa8e0b55841d4550f70394b13d2ce1aa708c328017dc3e"
+  },
+  {
+    "path": "docs/live-path-audit.md",
+    "sha256": "09682ea534794c4abba6ffca75f9b5beb3f11f536ff1836b71e36666b313e7e2"
+  },
+  {
+    "path": "docs/source-access.md",
+    "sha256": "662d11d2cca7b8d5d2077da5cc7978d81aaf36d85a14171705eb8e9161b7b01f"
+  },
+  {
+    "path": "docs/spring-boot-integration.md",
+    "sha256": "e6680cd8b77cd6399a78a5a6229e1c1018497d8f7c5161a812866a7b72031415"
+  },
+  {
+    "path": "docs/verification.md",
+    "sha256": "fd248f49d661142297472f3124083333ee83c56d5ed561097108bf65497671c6"
+  },
+  {
+    "path": "docs/source-access/easemytrip.md",
+    "sha256": "3680fb24289df19b9b7dc247604e32a21b82d740485c15698d68928bdcee895a"
+  },
+  {
+    "path": "docs/source-access/gyftr.md",
+    "sha256": "95931d714de862c7f1ca6e9035522bb1f4be0045e4bdac2250640e6dd7db6e7d"
+  },
+  {
+    "path": "docs/source-access/yatra.md",
+    "sha256": "de7ee8bc340b04aca090dc57c934534f06bd810c5b425846a39ed2fcba867625"
+  },
+  {
+    "path": "src/payment_scraper/__init__.py",
+    "sha256": "a433176caafe8ea1573fea8fa7bdd6d63b580e2be0169af4bef9dea193e6a110"
+  },
+  {
+    "path": "src/payment_scraper/cli.py",
+    "sha256": "e36ae682697800f5b1933e6cb6698ad95495395683b6b1d0f23639881ddcb8ba"
+  },
+  {
+    "path": "src/payment_scraper/api/app.py",
+    "sha256": "0b43478927ea95d916f2b4ca80e19f56af4b146034f089f5c41ccd8ea2cd20e6"
+  },
+  {
+    "path": "src/payment_scraper/api/exception_handlers.py",
+    "sha256": "9c180a1b36e5fc1179e89fbf5ce75c4c91f7c1bd8152e9800cfa5a57cbf5db42"
+  },
+  {
+    "path": "src/payment_scraper/api/routes.py",
+    "sha256": "5f5a596066421e6ca5fd3e9bb5e38cf7ccbee3047d7407430c59c22ea2530e5c"
+  },
+  {
+    "path": "src/payment_scraper/api/schemas.py",
+    "sha256": "a316b88b0826f52b7462a5f3fed97e71b5e08f876b991f49e4247c3050dc7a2b"
+  },
+  {
+    "path": "src/payment_scraper/config/settings.py",
+    "sha256": "8d40fc81f1ed5d05e24792695caf07e589e2c2e5a1892c2e117aa594dd2a979d"
+  },
+  {
+    "path": "src/payment_scraper/core/blocked_page.py",
+    "sha256": "01769d1e1c2c76e3d6a2a866bea703482a820cfae8044eda35dd0919d6b74062"
+  },
+  {
+    "path": "src/payment_scraper/core/browser_fetcher.py",
+    "sha256": "ef2724ffe499c343ec175ceecc9b7a10d9119e839d39f443bb7e03160fa2c37f"
+  },
+  {
+    "path": "src/payment_scraper/core/deduplicator.py",
+    "sha256": "80c0a2defc7fb8448e41cb3b30e971318326c16709adc08a7419c91d6e22423a"
+  },
+  {
+    "path": "src/payment_scraper/core/enums.py",
+    "sha256": "0160f8d91f7d08d161f8fa0f98c4dc79571275099061c101a575fa8e30cb0cec"
+  },
+  {
+    "path": "src/payment_scraper/core/exceptions.py",
+    "sha256": "f7974a51b7c867f206c817989447847707b77a48d9bed1752301dff1b94cdf78"
+  },
+  {
+    "path": "src/payment_scraper/core/fetcher.py",
+    "sha256": "2771399396e6068fe8ee622cb7304df30c1264276f99e0efc4ebf797cbff6d67"
+  },
+  {
+    "path": "src/payment_scraper/core/logging_config.py",
+    "sha256": "e44929f3462a9d2107e7d3453afd9afa27984c6f35d5d6e9868bd3a40dd9ba96"
+  },
+  {
+    "path": "src/payment_scraper/core/models.py",
+    "sha256": "545576d1315d7a8bea5e65b0bd4f6f693e842c7729b719b479490263c20bc3e1"
+  },
+  {
+    "path": "src/payment_scraper/core/normalizer.py",
+    "sha256": "3cdb5a9e9fbcd10a00558cc1d71f489cc30de2c5f52f57aff3bc2b08c0e93cff"
+  },
+  {
+    "path": "src/payment_scraper/core/observations.py",
+    "sha256": "e726cb676b128a905574401cffe1f373237fe7e14f806bc021dcd8ea64f1fbbc"
+  },
+  {
+    "path": "src/payment_scraper/core/raw.py",
+    "sha256": "3626e64e59a098ab3ccedbdca1859a03075d40dd10822847b781d3f641f236c5"
+  },
+  {
+    "path": "src/payment_scraper/core/robots.py",
+    "sha256": "e1902fc1e53d89b72a44b527117928cfafcd5290b8bdba6bde9d56c1c6ae74d5"
+  },
+  {
+    "path": "src/payment_scraper/core/snapshot.py",
+    "sha256": "f778fa980a11b6ddd293a9561203bcc3bada384709a560a76ed9bafc312aa4b4"
+  },
+  {
+    "path": "src/payment_scraper/core/url_policy.py",
+    "sha256": "dda4559a1d1d672c43b9a33dd555eee537020f71053ee9bee7b4c435d64a28db"
+  },
+  {
+    "path": "src/payment_scraper/core/validator.py",
+    "sha256": "de884cec42155252eb6e58200d8a93a1d8a9ec7ec398be787c4ec051b6c1852f"
+  },
+  {
+    "path": "src/payment_scraper/output/json_writer.py",
+    "sha256": "72e4fa5bbfa3eacf204563630b6a0038ab8100ea32d4729f31ee3e6f17fd3a59"
+  },
+  {
+    "path": "src/payment_scraper/providers/base.py",
+    "sha256": "93b305ec5ec673a3b3a4feead8126ff70ff1f2158680a37d0c3b1968a6d393d1"
+  },
+  {
+    "path": "src/payment_scraper/providers/registry.py",
+    "sha256": "3d34eaeb2c5617814cefac9fc5fc1fe372947798c21d8e18dcdd8efef385e40f"
+  },
+  {
+    "path": "src/payment_scraper/providers/easemytrip/config.py",
+    "sha256": "565d71c4c89758c0d2a112c28cc0bf113dbcfdef67c34e1709cd1a8e525e375d"
+  },
+  {
+    "path": "src/payment_scraper/providers/easemytrip/parser.py",
+    "sha256": "16416c90d86639dcd79e18a27f2fb2f004629688b4328d44893ed1c0ac55904f"
+  },
+  {
+    "path": "src/payment_scraper/providers/easemytrip/scraper.py",
+    "sha256": "4e053d29ed60e627878520e51b049560f318d41707872a958cec85af35881129"
+  },
+  {
+    "path": "src/payment_scraper/providers/gyftr/config.py",
+    "sha256": "cded0310043db36f24b0e542a6f80e1a38fe5db544a61e8288457397b93469b5"
+  },
+  {
+    "path": "src/payment_scraper/providers/gyftr/parser.py",
+    "sha256": "1a41ae14edb197adce0b7a33e1ff16c795f8b12efdb91affd1eff629c11c6904"
+  },
+  {
+    "path": "src/payment_scraper/providers/gyftr/scraper.py",
+    "sha256": "23161e2e3af108033e0ff74c4e3e7ec68e687007faea5144035281e158782948"
+  },
+  {
+    "path": "src/payment_scraper/providers/yatra/config.py",
+    "sha256": "6658d4d6e6617313767ec7ba2342dfc209b341813192b8ae9ab0b4390b10f2c5"
+  },
+  {
+    "path": "src/payment_scraper/providers/yatra/parser.py",
+    "sha256": "b666a14a63680e3be30e0215b710da1978344ff954315373141554793709f5cd"
+  },
+  {
+    "path": "src/payment_scraper/providers/yatra/scraper.py",
+    "sha256": "478fbddf61fd17d673427089520bb0c3d1958564ba6ddc5e18ac0d22fab0c3bd"
+  },
+  {
+    "path": "src/payment_scraper/services/scraping_service.py",
+    "sha256": "171eccd6b0d99b0bcf366cd0b838b07364ace786b0fda9cb04e55e900b322d84"
+  },
+  {
+    "path": "tests/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "tests/conftest.py",
+    "sha256": "51cd113adf0fed3ccbbfc404b603b604a88141fb55ec8a73517997b36228efe3"
+  },
+  {
+    "path": "tests/contract/test_all_providers.py",
+    "sha256": "031258ad0c80b0c76b8cb87edd83aa09837b5b1fc00a3c687bffcbd1ddc7b6c8"
+  },
+  {
+    "path": "tests/contract/test_api.py",
+    "sha256": "44ab8c748d505cf6286a912dc2aaf2e23027a5af7a082f2dc4af1bc18ee563c2"
+  },
+  {
+    "path": "tests/contract/test_service.py",
+    "sha256": "24c27fd8155623074e748f59649d6f6888bfee712cab4c192687484722b308d6"
+  },
+  {
+    "path": "tests/fixtures/easemytrip_easemytrip.html",
+    "sha256": "032727a7d0e8ca8a8643d6d4a7737b05d9560bd6c61ff18c928bb02a78d744da"
+  },
+  {
+    "path": "tests/fixtures/gyftr_swiggy.html",
+    "sha256": "a4501751bdcd369f994fb52da1bd2c3f2f71f34083fa802e9a584f23ea4c0cf3"
+  },
+  {
+    "path": "tests/fixtures/README.md",
+    "sha256": "81017eef0f389e3be8ededeec71f449353e056ad39cbdcb1c30d729bed322911"
+  },
+  {
+    "path": "tests/fixtures/yatra_yatra.html",
+    "sha256": "1c3a74e26da83fd5a8a53e0efe180734155356b15c498ff03e1cc1fa6efb2db8"
+  },
+  {
+    "path": "tests/fixtures/contracts/easemytrip_easemytrip.json",
+    "sha256": "ffce2e7c8e24ba348af5b1536815921c9303aa9096902b6211618167967270e7"
+  },
+  {
+    "path": "tests/fixtures/contracts/gyftr_swiggy.json",
+    "sha256": "1abce20060f7e7c0b59b8a96528bc12301b9b2ca23f40567609555fb4dd1d65e"
+  },
+  {
+    "path": "tests/fixtures/contracts/openapi.json",
+    "sha256": "a3b97003fc82f98f3ef5c249fa832e34ca4e7164ebc80a676f48157cd522114a"
+  },
+  {
+    "path": "tests/fixtures/contracts/yatra_yatra.json",
+    "sha256": "fa7cf154038ba0bcce7750067eaddbbea62cafb9d04862014f304297c0f4cea1"
+  },
+  {
+    "path": "tests/fixtures/live/easemytrip_easemytrip.html",
+    "sha256": "ff60ac3763452e607382d483699a180964a39c16933e6de04d0df16ef41460fa"
+  },
+  {
+    "path": "tests/fixtures/live/easemytrip_easemytrip.json",
+    "sha256": "d34bee58345a77afc742bd05a1a8cc76d3833f32e743dd877cfb04ed7926addd"
+  },
+  {
+    "path": "tests/fixtures/live/gyftr_swiggy.html",
+    "sha256": "ff0a0aa6ae5dd6296df5d7fbb224166cb2a81d50e39b3919b068a8c8d7b8320b"
+  },
+  {
+    "path": "tests/fixtures/live/gyftr_swiggy.json",
+    "sha256": "6602d1337cfd491e703abbe36dd2495fb2db3336e5036aa098ce453210174aef"
+  },
+  {
+    "path": "tests/fixtures/live/yatra_yatra.html",
+    "sha256": "a2614e7663104dc747e29fb9b92c994f6d54da3e12983228e7246a7a8ce17c54"
+  },
+  {
+    "path": "tests/fixtures/live/yatra_yatra.json",
+    "sha256": "dbca8904bc6629c82ed6a1fc3d961f7ab2ae245a09d8be6a210133dee11678e4"
+  },
+  {
+    "path": "tests/integration/live_assertions.py",
+    "sha256": "227fac3cae2297c448ad94a983eb23600057fe2f414bd008316af61569080d17"
+  },
+  {
+    "path": "tests/integration/test_browser_runtime.py",
+    "sha256": "d42df54f7e21357aa9fec8898bfa03d2b08761e004384344bdd7cbd41c8c85c6"
+  },
+  {
+    "path": "tests/integration/test_live_easemytrip.py",
+    "sha256": "15890ad310f54e9e11f9e654274bdbf18d74a2a7ed03910ce2700b187bec7b17"
+  },
+  {
+    "path": "tests/integration/test_live_gyftr.py",
+    "sha256": "3f6e4ea33709c521ce608a3bf67916aa1d514ba3c296c41cee0784516fb84951"
+  },
+  {
+    "path": "tests/integration/test_live_yatra.py",
+    "sha256": "c0027e5281f60adfab3e71afb8da0eb603441c3c1513e0bf84b137cb7cf73997"
+  },
+  {
+    "path": "tests/parsers/test_captured_live.py",
+    "sha256": "777a7bba5f044ba86c49054b769d7b141a062e7adacdbec8512ad556ce620bc8"
+  },
+  {
+    "path": "tests/parsers/test_easemytrip.py",
+    "sha256": "97e0c26142fd0926d6b6deaf0c0cb37f529ef28770a173c682c9d6460c318430"
+  },
+  {
+    "path": "tests/parsers/test_gyftr.py",
+    "sha256": "8c1f995b3f66cf7b15a3e9bf05b55f211afb802c50310f714206db103e11f51f"
+  },
+  {
+    "path": "tests/parsers/test_yatra.py",
+    "sha256": "3aa02469cfbfa17162ef606740b5a986c567b0c93b51540ae0fa0bdff6bac2ce"
+  },
+  {
+    "path": "tests/unit/test_access_regressions.py",
+    "sha256": "81a21668a22778d9a256f5feffdb8892a16ad8a14e0ced7cc46ac2223c615748"
+  },
+  {
+    "path": "tests/unit/test_browser_fetcher.py",
+    "sha256": "037d152cc173a63caa22e4d46375e1849f65dcb489325b6b339a51a2dd1a0764"
+  },
+  {
+    "path": "tests/unit/test_fetcher.py",
+    "sha256": "bace632ec2feb218d5d8eab77f748bb63c3dd736da968d3c289155ca06c4f66c"
+  },
+  {
+    "path": "tests/unit/test_live_acquisition.py",
+    "sha256": "53a54412c8157254aed648efab077cc61b499d3e9c5f55fbb2189d2e27498672"
+  },
+  {
+    "path": "tests/unit/test_normalization.py",
+    "sha256": "89260114362d4f70c0e6aa169f90c3f375a39a296bc48f55f1c016ca547af81f"
+  },
+  {
+    "path": "tests/unit/test_orchestration.py",
+    "sha256": "ab0f942cbea5277f5a9d013780f07d33e30bd3f9226ce4e5f2d3543a3906b379"
+  },
+  {
+    "path": "tests/unit/test_quality_regressions.py",
+    "sha256": "5f66613248d01bbabbbeb0558058e5db40ea409f3fc8f5fb772095d63c8d5ccf"
+  },
+  {
+    "path": "tests/unit/test_snapshots.py",
+    "sha256": "fc4127054aa86680833f36564c08cf899e210df8dc8fdaf836c4862698dbcc21"
+  },
+  {
+    "path": "tests/unit/test_validation.py",
+    "sha256": "bb17a8e9fa7681cdc3c1df8e6ea33f43113ea8ca65fdcac1c8940c8d33979a0f"
+  },
+  {
+    "path": "tools/capture_live_fixture.py",
+    "sha256": "af576d2b8a5e85ea5fa1d1223974963d16d5280402e750f6935538faa0566320"
+  },
+  {
+    "path": "tools/export_contracts.py",
+    "sha256": "d212cf50b77373a04c2a6496d2a01d7342ef64dfa7099717eb3bf1cacdce1650"
+  },
+  {
+    "path": "tools/inspect_snapshot.py",
+    "sha256": "0c8d85c58ffb0cf53f31a6ff3af277e17efcfce8371d126add1588dc1231b614"
+  },
+  {
+    "path": "tools/probe_provider.py",
+    "sha256": "e98adaacc0b159ee65f395db8a2220452ce614f0013b940f37b93c906f5d58a5"
+  },
+  {
+    "path": "tools/review_gyftr_access.py",
+    "sha256": "4ce19045948fdfb14c7551b8315e5985075e0005bb190bcc45bd0b533b95d387"
+  },
+  {
+    "path": "tools/review_source_access.py",
+    "sha256": "a5b6f09c6f164e6ea78f80d0355b39dd10ff48dc237a350df05e7b222901fc06"
+  },
+  {
+    "path": "tools/smoke_server.py",
+    "sha256": "be8c049af20684d52750037ff16f87aff1d5692bc0563a92ad5b86ee85638869"
+  },
+  {
+    "path": "tools/verify_api.py",
+    "sha256": "feb2dd97266db20e24aa64972b377379978a5c61efa70e8fc127a2de895dfff4"
+  },
+  {
+    "path": "tools/verify_contracts.py",
+    "sha256": "2bed628d63956dbc2fea4e262bd38423304f61de56920690d06efc2e985a439b"
+  },
+  {
+    "path": "tools/verify_live.py",
+    "sha256": "3d5b817de8f686f3e2861020e16bbbdefbabccbf9d22b759019e7e03fb021990"
+  }
+]

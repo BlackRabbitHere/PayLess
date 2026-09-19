@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "externalKey": "GYFTR-SWIGGY-232e83debe6927e4034ea6d1",
+  "provider": "GYFTR",
+  "merchant": "SWIGGY",
+  "title": "Swiggy Money Voucher — INR 150",
+  "offerType": "VOUCHER_DISCOUNT",
+  "transactionMode": "VOUCHER",
+  "voucher": {
+    "faceValue": "150.00",
+    "sellingPrice": "146.25"
+  },
+  "discount": {
+    "type": "PERCENTAGE",
+    "value": "2.50",
+    "maximumDiscount": null
+  },
+  "minimumTransaction": null,
+  "eligibleIssuers": [],
+  "eligibleInstrumentTypes": [
+    "UPI",
+    "WALLET"
+  ],
+  "promoCode": null,
+  "validFrom": null,
+  "validUntil": null,
+  "usageLimit": null,
+  "stackingPolicy": "UNKNOWN",
+  "terms": [
+    "GV/GC would be accepted only on the Swiggy App",
+    "GV/GC can be used to buy discounted products",
+    "In case someone fails to redeem the code during the validity period the Voucher Code will expire however once money is loaded in your Swiggy Wallet powered by their banking partner, it is valid for 365 days only.",
+    "Displayed discount applies to: UPI, e-Pay.",
+    "Displayed saving INR 3.75; payment-method discounts may differ."
+  ],
+  "availability": "UNKNOWN",
+  "sourceUrl": "https://www.gyftr.com/swiggy-gv",
+  "actionUrl": "https://www.gyftr.com/swiggy-gv",
+  "actionLabel": "Buy Voucher",
+  "verificationStatus": "VERIFIED",
+  "lastVerifiedAt": "2026-09-19T02:55:16.767454Z",
+  "scrapedAt": "2026-09-19T02:55:16.767454Z",
+  "contentHash": "06d0d52251ebc6acca39f542ca15b33a0ee0511b8e182dafb66d97fac78aecc4"
+}

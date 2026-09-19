@@ -1,0 +1,24 @@
+import { Check, ChevronDown, CircleAlert, ExternalLink, Gift, Info, ShieldCheck, Ticket, X } from 'lucide-react'
+import { dateLabel, money } from '../model/presentation'
+import { isAllowedRedirect } from '../../redirect/model/redirectSafety'
+import { Badge, OfferBadge } from '../../../shared/components/UI'
+import type { PaymentRoute } from '../model/types'
+
+export { CostBreakdown } from './CostBreakdown'
+
+export function EligibilityChecklist({ route, open = false }: { route: PaymentRoute; open?: boolean }) {
+  return <details className="explanation panel" open={open || undefined}><summary><span><span className="section-icon green"><ShieldCheck size={17} /></span>Why this works <Badge tone={route.eligible ? 'green' : 'amber'}>{route.eligible ? 'Eligible' : 'Not eligible'}</Badge></span><ChevronDown size={17} /></summary><div className="explanation-body"><ul className="eligibility-list">{route.rules.map(rule => <li key={rule.label} className={rule.passes ? '' : 'failed'}>{rule.passes ? <Check size={16} /> : <X size={16} />}<span>{rule.label}</span></li>)}</ul>{route.offer && <div className="eligibility-note"><Info size={14} /><span>Eligibility is evaluated against your selected products and fictional offer rules.</span></div>}</div></details>
+}
+
+export function OfferConditions({ route }: { route: PaymentRoute }) {
+  return <details className="explanation panel"><summary><span><span className="section-icon"><Ticket size={17} /></span>Offer Conditions</span><span className="summary-trailing">View conditions <ChevronDown size={17} /></span></summary><div className="explanation-body">{route.offer ? <dl className="condition-list"><div><dt>Minimum transaction</dt><dd>{money(route.offer.minimum)}</dd></div><div><dt>Maximum discount</dt><dd>{money(route.offer.cap)}</dd></div><div><dt>Payment method</dt><dd>{route.paymentName}</dd></div><div><dt>Issuer / Card type</dt><dd>{route.paymentIssuer} · {route.paymentType}</dd></div><div><dt>Promo code</dt><dd>{route.offer.promo ?? 'Applied automatically'}</dd></div><div><dt>Demo validity</dt><dd>{dateLabel(route.offer.validFrom)} – {dateLabel(route.offer.validUntil)}</dd></div><div><dt>Usage limit</dt><dd>{route.offer.usage}</dd></div><div><dt>Stacking restrictions</dt><dd>{route.offer.restrictions}</dd></div></dl> : <p className="muted">Direct payment has no promotional offer conditions. The listed merchant price and fees still apply.</p>}</div></details>
+}
+
+export function SourceVerification({ route }: { route: PaymentRoute }) {
+  return <details className="explanation panel"><summary><span><span className="section-icon"><ShieldCheck size={17} /></span>Source & verification</span><span className="summary-trailing"><OfferBadge status={route.status} /><ChevronDown size={17} /></span></summary><div className="explanation-body"><dl className="condition-list"><div><dt>Source</dt><dd>Sample {route.merchant} {route.offer ? 'offer' : 'price'} fixture</dd></div><div><dt>Last verified</dt><dd>{dateLabel(route.lastVerifiedAt)} <span className="muted">(demo timestamp)</span></dd></div><div><dt>Live verification</dt><dd>Not performed — sample information only</dd></div><div><dt>Provider reference</dt><dd>{isAllowedRedirect(route.sourceUrl) ? <a className="text-button" href={route.sourceUrl} target="_blank" rel="noopener noreferrer">Open source page<ExternalLink size={13} /></a> : 'No external reference available'}</dd></div><div><dt>Source reference</dt><dd><code>{route.offer?.id ?? route.id}</code></dd></div></dl>{route.stale && <div className="notice notice-amber"><CircleAlert size={18} /><p>Offer information may be outdated. This route is excluded from recommendations until its terms are checked.</p></div>}{route.status === 'AMBIGUOUS' && <div className="notice notice-amber"><CircleAlert size={18} /><p>Source terms are inconsistent. This route is not automatically recommended.</p></div>}<p className="fine-print">Prices, offers, reward values and verification dates are invented to demonstrate the product. They are not live merchant terms. The provider reference is for context; it does not verify this fictional offer or guarantee its price.</p><div className="trust-legend"><span className="eyebrow">STATUS KEY</span><div><OfferBadge status="VERIFIED" /><span>Reserved for source-checked offers</span></div><div><OfferBadge status="DEMO" /><span>Sample information in this prototype</span></div><div><OfferBadge status="AMBIGUOUS" /><span>Conflicting terms; excluded from ranking</span></div></div></div></details>
+}
+
+export function RewardNote({ route }: { route: PaymentRoute }) { return <div className="reward-note"><Gift size={18} /><span><strong>{money(route.rewards)} in Estimated Rewards</strong><small>{route.rewards ? 'Expected later. Already included in Effective Cost.' : 'No deferred reward value assumed for this route.'}</small></span></div> }
+export function MerchantActionIcon() { return <ExternalLink size={17} /> }
+
+

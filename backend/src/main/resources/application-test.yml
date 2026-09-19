@@ -1,0 +1,5 @@
+scraper:
+  base-url: ${SCRAPER_BASE_URL:http://127.0.0.1:18000}
+  connect-timeout: 1s
+  read-timeout: 2s
+  allow-fixtures: true

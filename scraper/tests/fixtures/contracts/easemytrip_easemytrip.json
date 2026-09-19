@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "status": "SUCCESS",
+  "provider": "EASEMYTRIP",
+  "merchant": "EASEMYTRIP",
+  "startedAt": "2026-09-18T16:30:00Z",
+  "completedAt": "2026-09-18T16:30:00Z",
+  "offers": [
+    {
+      "schemaVersion": 1,
+      "externalKey": "EASEMYTRIP-EASEMYTRIP-364a49a712cb6c5925132e25",
+      "provider": "EASEMYTRIP",
+      "merchant": "EASEMYTRIP",
+      "title": "Fixture UPI flight discount",
+      "offerType": "PAYMENT_METHOD_DISCOUNT",
+      "transactionMode": "UPI",
+      "voucher": null,
+      "discount": {
+        "type": "FLAT",
+        "value": "250.00",
+        "maximumDiscount": null
+      },
+      "minimumTransaction": "3000.00",
+      "eligibleIssuers": [],
+      "eligibleInstrumentTypes": [
+        "UPI"
+      ],
+      "promoCode": "FIXTUREUPI",
+      "validFrom": null,
+      "validUntil": null,
+      "usageLimit": "Once per account.",
+      "stackingPolicy": "NOT_ALLOWED",
+      "terms": [
+        "Synthetic example: use UPI for payment."
+      ],
+      "availability": "UNKNOWN",
+      "sourceUrl": "https://www.easemytrip.com/offers/bank-deals.html",
+      "actionUrl": "https://www.easemytrip.com/",
+      "actionLabel": "Book Now",
+      "verificationStatus": "VERIFIED",
+      "lastVerifiedAt": "2026-09-18T16:30:00Z",
+      "scrapedAt": "2026-09-18T16:30:00Z",
+      "contentHash": "00cbe77e3e5101438828d450280530d4235d4fdd969742f2f89ad61ebce7bf2e"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "FIXTURE_DATA",
+      "message": "Synthetic fixture data; not a live commercial offer.",
+      "externalKey": null
+    }
+  ],
+  "errors": [],
+  "metadata": {
+    "cacheHit": false,
+    "fetchMethod": "FIXTURE",
+    "offersFound": 1,
+    "offersExcluded": 0,
+    "fixture": true
+  }
+}

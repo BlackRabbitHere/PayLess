@@ -1,0 +1,6 @@
+scraper:
+  base-url: ${SCRAPER_BASE_URL}
+  allow-fixtures: false
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}

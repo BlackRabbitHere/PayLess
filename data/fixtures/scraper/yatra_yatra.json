@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "status": "SUCCESS",
+  "provider": "YATRA",
+  "merchant": "YATRA",
+  "startedAt": "2026-09-18T16:30:00Z",
+  "completedAt": "2026-09-18T16:30:00Z",
+  "offers": [
+    {
+      "schemaVersion": 1,
+      "externalKey": "YATRA-YATRA-5a3d4cf1d55dca4ebc9a03b6",
+      "provider": "YATRA",
+      "merchant": "YATRA",
+      "title": "Fixture ICICI Credit Card EMI Offer",
+      "offerType": "INSTANT_DISCOUNT",
+      "transactionMode": "EMI",
+      "voucher": null,
+      "discount": {
+        "type": "PERCENTAGE",
+        "value": "12.00",
+        "maximumDiscount": "2000.00"
+      },
+      "minimumTransaction": "5000.00",
+      "eligibleIssuers": [
+        "ICICI"
+      ],
+      "eligibleInstrumentTypes": [
+        "CREDIT_CARD"
+      ],
+      "promoCode": "FIXTURE12",
+      "validFrom": "2026-08-31T18:30:00Z",
+      "validUntil": "2026-09-30T18:29:59.999999Z",
+      "usageLimit": "Once per card during the offer period.",
+      "stackingPolicy": "NOT_ALLOWED",
+      "terms": [
+        "Fixture only. Credit card EMI required.",
+        "Cannot be clubbed with other offers."
+      ],
+      "availability": "UNKNOWN",
+      "sourceUrl": "https://www.yatra.com/offer/details/icici-bank-no-cost-emi-offers",
+      "actionUrl": "https://www.yatra.com/",
+      "actionLabel": "Book Now",
+      "verificationStatus": "VERIFIED",
+      "lastVerifiedAt": "2026-09-18T16:30:00Z",
+      "scrapedAt": "2026-09-18T16:30:00Z",
+      "contentHash": "a9110d59d2e3ebc36062aaa58966cfefd398a5e0feb87037f5c69ed1908ddea2"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "FIXTURE_DATA",
+      "message": "Synthetic fixture data; not a live commercial offer.",
+      "externalKey": null
+    }
+  ],
+  "errors": [],
+  "metadata": {
+    "cacheHit": false,
+    "fetchMethod": "FIXTURE",
+    "offersFound": 1,
+    "offersExcluded": 0,
+    "fixture": true
+  }
+}

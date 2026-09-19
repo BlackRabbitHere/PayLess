@@ -1,0 +1,1069 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Payment Offer Scraper",
+    "description": "Internal background ingestion interface; schemaVersion 1.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/providers": {
+      "get": {
+        "summary": "Providers",
+        "operationId": "providers_api_v1_providers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvidersResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scrape": {
+      "post": {
+        "summary": "Scrape",
+        "operationId": "scrape_api_v1_scrape_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ScrapeResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApiErrorResponse"
+                    }
+                  ],
+                  "title": "Response 500 Scrape Api V1 Scrape Post"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/schema/offers": {
+      "get": {
+        "summary": "Offer Schema",
+        "operationId": "offer_schema_api_v1_schema_offers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferSchemaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/offers": {
+      "get": {
+        "summary": "Offers",
+        "description": "Independent result envelopes preserve successful providers alongside source failures.",
+        "operationId": "offers_api_v1_offers_get",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Provider"
+            }
+          },
+          {
+            "name": "merchant",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Merchant"
+            }
+          },
+          {
+            "name": "force_refresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Force Refresh"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScrapeResponse"
+                  },
+                  "title": "Response Offers Api V1 Offers Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiErrorResponse": {
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/ScrapeError"
+            },
+            "type": "array",
+            "title": "Errors"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "title": "ApiErrorResponse"
+      },
+      "Availability": {
+        "type": "string",
+        "enum": [
+          "AVAILABLE",
+          "UNAVAILABLE",
+          "UNKNOWN"
+        ],
+        "title": "Availability"
+      },
+      "Discount": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/DiscountType",
+            "default": "UNKNOWN"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "decimal_places": 6
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "maximumDiscount": {
+            "anyOf": [
+              {
+                "type": "string",
+                "decimal_places": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximumdiscount"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "Discount"
+      },
+      "DiscountType": {
+        "type": "string",
+        "enum": [
+          "PERCENTAGE",
+          "FLAT",
+          "CASHBACK",
+          "VARIABLE",
+          "UNKNOWN"
+        ],
+        "title": "DiscountType"
+      },
+      "ErrorCode": {
+        "type": "string",
+        "enum": [
+          "DNS_ERROR",
+          "CONNECT_TIMEOUT",
+          "READ_TIMEOUT",
+          "TLS_ERROR",
+          "HTTP_403",
+          "HTTP_404",
+          "HTTP_429",
+          "HTTP_5XX",
+          "REDIRECT_LOOP",
+          "BLOCK_PAGE",
+          "EMPTY_RESPONSE",
+          "UNSUPPORTED_CONTENT_TYPE",
+          "BROWSER_NAVIGATION_FAILED",
+          "BROWSER_BLOCK_PAGE",
+          "PARSE_FAILED",
+          "JS_RENDER_REQUIRED",
+          "PROVIDER_DISABLED",
+          "PROVIDER_NOT_SUPPORTED",
+          "MERCHANT_NOT_SUPPORTED",
+          "ROBOTS_DISALLOWED",
+          "FETCH_TIMEOUT",
+          "FETCH_FORBIDDEN",
+          "FETCH_RATE_LIMITED",
+          "SOURCE_UNAVAILABLE",
+          "CONTENT_TYPE_INVALID",
+          "RESPONSE_TOO_LARGE",
+          "URL_NOT_ALLOWED",
+          "PARSER_FAILED",
+          "VALIDATION_FAILED",
+          "NO_OFFERS_FOUND",
+          "BROWSER_FAILED",
+          "BAD_REQUEST",
+          "INTERNAL_ERROR"
+        ],
+        "title": "ErrorCode"
+      },
+      "FetchMethod": {
+        "type": "string",
+        "enum": [
+          "HTTP",
+          "BROWSER",
+          "FIXTURE"
+        ],
+        "title": "FetchMethod"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status",
+            "default": "ok"
+          },
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "fixture"
+            ],
+            "title": "Mode"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "title": "HealthResponse"
+      },
+      "OfferSchemaResponse": {
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "jsonSchema": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Jsonschema"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "jsonSchema"
+        ],
+        "title": "OfferSchemaResponse"
+      },
+      "OfferType": {
+        "type": "string",
+        "enum": [
+          "VOUCHER_DISCOUNT",
+          "INSTANT_DISCOUNT",
+          "CASHBACK",
+          "COUPON",
+          "BANK_OFFER",
+          "PAYMENT_METHOD_DISCOUNT",
+          "UNKNOWN"
+        ],
+        "title": "OfferType"
+      },
+      "ProviderId": {
+        "type": "string",
+        "enum": [
+          "GYFTR",
+          "YATRA",
+          "EASEMYTRIP"
+        ],
+        "title": "ProviderId"
+      },
+      "ProviderInfo": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "merchants": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Merchants"
+          },
+          "browserFallback": {
+            "type": "boolean",
+            "title": "Browserfallback"
+          },
+          "liveReady": {
+            "type": "boolean",
+            "title": "Liveready"
+          },
+          "termsReviewed": {
+            "type": "boolean",
+            "title": "Termsreviewed"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": false
+          },
+          "httpReady": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Httpready"
+          },
+          "browserReady": {
+            "type": "boolean",
+            "title": "Browserready",
+            "default": false
+          },
+          "parserReady": {
+            "type": "boolean",
+            "title": "Parserready",
+            "default": true
+          },
+          "sourceReachable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sourcereachable"
+          },
+          "liveVerified": {
+            "type": "boolean",
+            "title": "Liveverified",
+            "default": false
+          },
+          "lastSuccessfulScrape": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastsuccessfulscrape"
+          },
+          "lastFailure": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastfailure"
+          },
+          "lastCheckedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastcheckedat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provider",
+          "merchants",
+          "browserFallback",
+          "liveReady",
+          "termsReviewed"
+        ],
+        "title": "ProviderInfo"
+      },
+      "ProvidersResponse": {
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "providers": {
+            "items": {
+              "$ref": "#/components/schemas/ProviderInfo"
+            },
+            "type": "array",
+            "title": "Providers"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "providers"
+        ],
+        "title": "ProvidersResponse"
+      },
+      "ScrapeError": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "retryable": {
+            "type": "boolean",
+            "title": "Retryable",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ScrapeError"
+      },
+      "ScrapeMetadata": {
+        "properties": {
+          "cacheHit": {
+            "type": "boolean",
+            "title": "Cachehit",
+            "default": false
+          },
+          "fetchMethod": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FetchMethod"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "offersFound": {
+            "type": "integer",
+            "title": "Offersfound",
+            "default": 0
+          },
+          "offersExcluded": {
+            "type": "integer",
+            "title": "Offersexcluded",
+            "default": 0
+          },
+          "fixture": {
+            "type": "boolean",
+            "title": "Fixture",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ScrapeMetadata"
+      },
+      "ScrapeRequest": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+            "title": "Provider"
+          },
+          "merchant": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_ -]*$",
+            "title": "Merchant"
+          },
+          "forceRefresh": {
+            "type": "boolean",
+            "title": "Forcerefresh",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provider",
+          "merchant"
+        ],
+        "title": "ScrapeRequest"
+      },
+      "ScrapeResponse": {
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Requestid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ScrapeStatus"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "merchant": {
+            "type": "string",
+            "title": "Merchant"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Startedat"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Completedat"
+          },
+          "offers": {
+            "items": {
+              "$ref": "#/components/schemas/ScrapedOffer"
+            },
+            "type": "array",
+            "title": "Offers"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/ScrapeWarning"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/ScrapeError"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ScrapeMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "requestId",
+          "status",
+          "provider",
+          "merchant",
+          "startedAt",
+          "completedAt"
+        ],
+        "title": "ScrapeResponse"
+      },
+      "ScrapeStatus": {
+        "type": "string",
+        "enum": [
+          "SUCCESS",
+          "PARTIAL",
+          "FAILED"
+        ],
+        "title": "ScrapeStatus"
+      },
+      "ScrapeWarning": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "externalKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Externalkey"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ScrapeWarning"
+      },
+      "ScrapedOffer": {
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1,
+            "title": "Schemaversion",
+            "default": 1
+          },
+          "externalKey": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Externalkey"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderId"
+          },
+          "merchant": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Merchant"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "offerType": {
+            "$ref": "#/components/schemas/OfferType"
+          },
+          "transactionMode": {
+            "$ref": "#/components/schemas/TransactionMode",
+            "default": "UNKNOWN"
+          },
+          "voucher": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Voucher"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "discount": {
+            "$ref": "#/components/schemas/Discount"
+          },
+          "minimumTransaction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "decimal_places": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimumtransaction"
+          },
+          "eligibleIssuers": {
+            "items": {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Eligibleissuers"
+          },
+          "eligibleInstrumentTypes": {
+            "items": {
+              "$ref": "#/components/schemas/TransactionMode"
+            },
+            "type": "array",
+            "title": "Eligibleinstrumenttypes"
+          },
+          "promoCode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promocode"
+          },
+          "validFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validfrom"
+          },
+          "validUntil": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validuntil"
+          },
+          "usageLimit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Usagelimit"
+          },
+          "stackingPolicy": {
+            "$ref": "#/components/schemas/StackingPolicy",
+            "default": "UNKNOWN"
+          },
+          "terms": {
+            "items": {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Terms"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/Availability",
+            "default": "UNKNOWN"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Sourceurl"
+          },
+          "actionUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actionurl"
+          },
+          "actionLabel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actionlabel"
+          },
+          "verificationStatus": {
+            "$ref": "#/components/schemas/VerificationStatus",
+            "default": "INCOMPLETE"
+          },
+          "lastVerifiedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastverifiedat"
+          },
+          "scrapedAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Scrapedat"
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Contenthash"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "externalKey",
+          "provider",
+          "merchant",
+          "title",
+          "offerType",
+          "sourceUrl",
+          "scrapedAt",
+          "contentHash"
+        ],
+        "title": "ScrapedOffer"
+      },
+      "StackingPolicy": {
+        "type": "string",
+        "enum": [
+          "ALLOWED",
+          "NOT_ALLOWED",
+          "UNKNOWN"
+        ],
+        "title": "StackingPolicy"
+      },
+      "TransactionMode": {
+        "type": "string",
+        "enum": [
+          "VOUCHER",
+          "CREDIT_CARD",
+          "DEBIT_CARD",
+          "CARD",
+          "UPI",
+          "EMI",
+          "NET_BANKING",
+          "WALLET",
+          "UNKNOWN"
+        ],
+        "title": "TransactionMode"
+      },
+      "VerificationStatus": {
+        "type": "string",
+        "enum": [
+          "VERIFIED",
+          "AMBIGUOUS",
+          "INCOMPLETE"
+        ],
+        "title": "VerificationStatus"
+      },
+      "Voucher": {
+        "properties": {
+          "faceValue": {
+            "anyOf": [
+              {
+                "type": "string",
+                "decimal_places": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facevalue"
+          },
+          "sellingPrice": {
+            "anyOf": [
+              {
+                "type": "string",
+                "decimal_places": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sellingprice"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "Voucher"
+      }
+    }
+  }
+}
