@@ -1,4 +1,4 @@
-# Routewise React integration — Phase 5
+# PayLess React integration — Phase 5
 
 Home submits the purchase sentence and selected wallet metadata to Spring at `POST /api/optimize/query`.
 Travel submits origin, destination, departure date, passengers and wallet to `POST /api/travel/optimize`.

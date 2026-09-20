@@ -4,7 +4,7 @@ import type { SourceStatus } from '../../features/optimization/model/types'
 import { BRAND } from '../../app/config/brand'
 
 export function Brand({ small = false }: { small?: boolean }) {
-  return <span className={`brand ${small ? 'brand-small' : ''}`}><img src="/favicon.svg" alt="" /><span>{BRAND.wordmark}<span className="brand-period">.</span></span></span>
+  return <span className={`brand ${small ? 'brand-small' : ''}`}><span>{BRAND.name}<span className="brand-period">.</span></span></span>
 }
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'primary' | 'green' | 'amber' }) {
   return <span className={`badge badge-${tone}`}>{children}</span>
@@ -31,7 +31,7 @@ export function Modal({ title, children, onClose, wide = false, drawer = false }
     return () => { dialog?.close(); document.body.style.overflow = original; previouslyFocused?.focus() }
   }, [])
   return <dialog ref={ref} className={`modal ${wide ? 'modal-wide' : ''} ${drawer ? 'drawer' : ''}`} aria-labelledby="dialog-title" onCancel={event => { event.preventDefault(); closeRef.current() }} onClick={event => { if (event.target === event.currentTarget) closeRef.current() }}>
-    <div className="modal-header"><div><span className="eyebrow">{BRAND.name.toUpperCase()} PROTOTYPE</span><h2 id="dialog-title">{title}</h2></div><button className="icon-button" aria-label="Close dialog" onClick={onClose}><X size={20} /></button></div>
+    <div className="modal-header"><div><span className="eyebrow">{BRAND.name} · YOUR DEMO SPACE</span><h2 id="dialog-title">{title}</h2></div><button className="icon-button" aria-label="Close dialog" onClick={onClose}><X size={20} /></button></div>
     <div className="modal-body">{children}</div>
   </dialog>
 }

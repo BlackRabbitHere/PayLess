@@ -54,11 +54,11 @@
 @theme {
   --color-primary: #4940d4;
   --color-ink: #202538;
-  --color-muted: #74798a;
+  --color-muted: #62687a;
   --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
-:root { font-family: var(--font-sans); color: #202538; background: #f8f9fc; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --primary: #4940d4; --primary-soft: #efedff; --muted: #707588; --border: #e6e8f0; --green: #16815c; --green-soft: #edf9f2; }
+:root { font-family: var(--font-sans); color: #202538; background: #f8f9fc; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --primary: #4940d4; --primary-soft: #efedff; --muted: #62687a; --border: #e0e2ec; --green: #137551; --green-soft: #edf9f2; --card-radius: 14px; --input-radius: 8px; --surface-shadow: 0 4px 20px #20253806; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; }
 button, input, select { font: inherit; }
@@ -67,7 +67,7 @@ button, summary { cursor: pointer; }
 button { transition: background .18s, border-color .18s, transform .18s; }
 button:disabled { cursor: not-allowed; opacity: .5; }
 a { text-decoration: none; color: inherit; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid #aaa4f8; outline-offset: 4px; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
 input, select { color: #202538; }
 select { cursor: pointer; }
 input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
@@ -81,7 +81,7 @@ strong { font-weight: 650; }
 .text-xs { font-size: .75rem; }
 .savings-text { color: var(--green); }
 .stack { display: flex; flex-direction: column; gap: 14px; }
-.panel { background: white; border: 1px solid var(--border); border-radius: 14px; }
+.panel { background: white; border: 1px solid var(--border); border-radius: var(--card-radius); box-shadow: var(--surface-shadow); }
 .page { width: min(1220px, calc(100% - 96px)); margin: 0 auto; padding: 32px 0 60px; min-height: calc(100vh - 166px); }
 .button { min-height: 45px; padding: 12px 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 8px; font-size: .875rem; font-weight: 600; border: 1px solid transparent; line-height: 1.4; }
 .button-primary { color: white; background: var(--primary); box-shadow: 0 3px 7px #4940d412; }
@@ -104,8 +104,8 @@ strong { font-weight: 650; }
 .section-heading .eyebrow { margin-bottom: 8px; }
 .section-heading p { font-size: .875rem; color: var(--muted); margin-top: 7px; }
 .section-aside { font-size: .8125rem; color: #9498a6; }
-.skip-link { position: fixed; top: -100px; left: 15px; background: white; padding: 10px 20px; z-index: 100; color: var(--primary); }
-.skip-link:focus { top: 12px; }
+.skip-link { position: fixed; top: 12px; left: 15px; opacity: 0; pointer-events: none; transform: translateY(-200%); background: white; padding: 10px 20px; z-index: 100; color: var(--primary); }
+.skip-link:focus { opacity: 1; pointer-events: auto; transform: none; }
 
 /* A restrained frame keeps the payment route in focus. */
 .app-header { height: 78px; background: #fff; border-bottom: 1px solid var(--border); }
@@ -809,23 +809,30 @@ summary::-webkit-details-marker { display: none; }
 .live-intro ol { padding-left: 24px; line-height: 2; margin-bottom: 24px; }
 .live-search { padding: 30px; margin-top: 24px; }
 .live-query { display: grid; gap: 14px; }
-.live-query textarea { width: 100%; resize: vertical; border: 1px solid #dce2dc; border-radius: 12px; padding: 18px; font: inherit; font-size: 1.1rem; background: #fff; color: #20372e; }
+.live-query textarea { width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: var(--input-radius); padding: 18px; font: inherit; font-size: 1.1rem; line-height: 1.65; background: #fcfbff; color: var(--color-ink); }
+.live-query > span { font-weight: 650; font-size: 1.125rem; }
+.live-query textarea[aria-invalid="true"] { border-color: #bd3c42; }
 .live-wallet { border: 0; padding: 0; margin: 28px 0; min-width: 0; }
 .live-wallet legend { font-weight: 700; margin-bottom: 12px; }
 .wallet-options { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-.wallet-options label { display: flex; gap: 10px; align-items: center; padding: 12px; border: 1px solid #dce2dc; border-radius: 9px; font-size: .85rem; cursor: pointer; }
-.wallet-options label:has(:checked) { background: #eff6ed; border-color: #7b9b69; }
-.wallet-options input { accent-color: #3e6630; }
+.wallet-options label { display: flex; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: var(--input-radius); font-size: .875rem; cursor: pointer; }
+.wallet-options label:has(:checked) { background: var(--primary-soft); border-color: #aaa4ed; }
+.wallet-options input { accent-color: var(--primary); }
+.wallet-selection-summary { color: var(--muted); font-size: .8125rem; margin-bottom: 12px; }
 .live-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .live-travel-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .live-travel-fields label { display: grid; gap: 8px; font-weight: 600; min-width: 0; }
 .live-travel-fields input, .live-travel-fields select { min-width: 0; width: 100%; border: 1px solid #dce2dc; border-radius: 8px; padding: 12px; background: white; font: inherit; }
 .live-route { padding: 26px; overflow-wrap: anywhere; min-width: 0; }
 .live-route h2 { margin: 12px 0 6px; }
-.live-best { border: 2px solid #729956; margin-top: 24px; }
-.live-cost { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 22px 0; }
-.live-cost dt { color: #65716b; font-size: .85rem; margin-bottom: 8px; }
-.live-cost dd { font-size: 1.7rem; font-weight: 700; margin: 0; }
+.live-best { border: 2px solid var(--primary); margin-top: 24px; }
+.live-best > .eyebrow { color: var(--primary); }
+.live-cost { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 22px 0; }
+.live-cost > div { min-width: 0; padding: 12px; border-radius: var(--input-radius); }
+.live-cost dt { color: var(--muted); font-size: .8125rem; margin-bottom: 8px; }
+.live-cost dd { font-size: clamp(1.25rem, 2vw, 1.7rem); font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
+.pay-now-metric { background: var(--primary-soft); }
+.effective-cost-metric { background: var(--green-soft); color: var(--green); }
 .live-route summary { cursor: pointer; font-weight: 700; padding: 15px 0; }
 .live-route details { border-top: 1px solid #e4e9e1; margin-top: 10px; }
 .live-reasons { list-style: none; padding: 0; line-height: 1.8; }
@@ -833,7 +840,7 @@ summary::-webkit-details-marker { display: none; }
 .live-steps p { margin: 0 0 8px; }
 .live-source { padding-bottom: 18px; }
 .live-source ul, .live-warnings ul { padding-left: 20px; line-height: 1.7; }
-.live-route > .fine-print { padding-left: 16px; line-height: 1.6; }
+.live-route > .fine-print { line-height: 1.7; color: var(--muted); }
 .live-route-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .live-route-grid .live-cost { grid-template-columns: repeat(2, 1fr); }
 .live-alternatives { margin: 32px 0; }
@@ -850,14 +857,80 @@ summary::-webkit-details-marker { display: none; }
 .live-warnings { padding: 24px 0; font-size: .85rem; color: #647068; overflow-wrap: anywhere; }
 .live-search .notice, .results-page > .notice { margin-top: 16px; }
 @media (max-width: 700px) {
-  .live-intro { display: none; }
+  .live-intro { display: block; padding: 22px; }
   .live-search, .live-route, .live-fares { padding: 20px; }
   .live-travel-fields, .live-cost { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .live-cost dd { font-size: 1.45rem; }
+  .live-cost dd { font-size: 1.25rem; }
   .live-route-grid, .fare-options { grid-template-columns: 1fr; }
   .live-alternatives .section-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
   .header-end .badge { display: none; }
   .main-nav { gap: 12px; }
-  .main-nav a { font-size: .72rem; }
+  .main-nav a { font-size: .8125rem; }
   .live-actions .button { font-size: .8rem; }
+}
+
+/* Shared refinements for the active search, wallet and results screens. */
+.brand { letter-spacing: -.045em; }
+.hero-copy > p, .hero-benefits, .privacy-banner p, .app-footer, .payment-product-bottom,
+.issuer-name, .product-type, .wallet-bottom-actions > p, .wallet-privacy p,
+.wallet-privacy li, .wallet-privacy > span, .wallet-summary > p, .fine-print { color: var(--muted); }
+.badge-neutral { color: #62687a; }
+.privacy-banner h2 { font-size: .9375rem; margin-bottom: 6px; }
+.supported-categories { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 24px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.supported-categories strong { color: var(--color-ink); }
+.query-examples button, .query-examples > a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border: 1px solid var(--border); border-radius: 24px; padding: 8px 14px; background: white; color: var(--primary); font-size: .8125rem; }
+.query-examples > a:hover { background: var(--primary-soft); }
+.live-search .form-error { padding: 14px 0 0; line-height: 1.7; }
+.live-travel-fields input, .live-travel-fields select { border-color: var(--border); min-height: 48px; }
+.live-travel-fields [aria-invalid="true"] { border-color: #bd3c42; }
+.live-route h2 { font-size: 1.375rem; line-height: 1.4; }
+.live-best h2 { font-size: 1.625rem; }
+.live-route details { border-color: var(--border); }
+.live-route summary { min-height: 48px; }
+.live-steps li::marker { color: var(--primary); font-weight: 700; }
+.live-steps p { line-height: 1.7; }
+.live-source { padding: 16px 0; }
+.live-source + .live-source { border-top: 1px solid var(--border); }
+.live-alternatives select { border: 1px solid var(--border); border-radius: var(--input-radius); min-height: 44px; padding: 8px; background: white; }
+.live-table:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.live-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.live-diagnostics h3 { font-size: .9375rem; margin: 18px 0 6px; }
+.live-diagnostics p, .live-diagnostics li { color: var(--muted); line-height: 1.7; font-size: .875rem; }
+.live-warnings { color: var(--muted); line-height: 1.7; }
+.live-warnings h2 { font-size: 1.125rem; }
+.page-title-row > div, .payment-product, .product-type, .wallet-summary, .privacy-banner > div { min-width: 0; overflow-wrap: anywhere; }
+.product-type { flex-wrap: wrap; }
+.remove-product { min-width: 44px; min-height: 44px; }
+.toggle { min-height: 28px; }
+.button, .text-button, .main-nav a { overflow-wrap: anywhere; }
+@media (min-width: 701px) and (max-width: 1024px) {
+  .header-end .badge { display: none; }
+  .header-inner { gap: 16px; }
+  .main-nav { gap: 20px; }
+  .wallet-layout { grid-template-columns: minmax(0, 1fr); }
+  .wallet-aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+}
+@media (max-width: 700px) {
+  .hero-eyebrow { font-size: .6875rem; letter-spacing: .06em; }
+  .home-page { display: flex; flex-direction: column; }
+  .home-page .home-hero { display: contents; }
+  .home-page .hero-copy { order: 0; }
+  .home-page .live-search { order: 1; }
+  .home-page .live-intro { order: 2; margin-top: 24px; width: 100%; }
+  .home-page .supported-categories { order: 3; }
+  .home-page .privacy-banner { order: 4; }
+  .main-nav { gap: 8px; }
+  .main-nav a { min-height: 48px; gap: 4px; }
+  .nav-count { display: none; }
+  .live-best h2 { font-size: 1.375rem; }
+  .live-route h2 { font-size: 1.25rem; }
+  .live-cost { gap: 8px; }
+  .live-cost > div { padding: 10px; }
+  .live-actions { align-items: stretch; }
+  .live-actions > .button { flex: 1 1 auto; }
+  .live-travel-fields { grid-template-columns: 1fr; }
+  .wallet-options label { width: 100%; }
+  .live-search .live-actions > .button:first-child { flex-basis: 100%; }
+  .wallet-selection-actions .text-button { min-height: 44px; }
+  .app-footer .text-button { min-height: 44px; }
 }

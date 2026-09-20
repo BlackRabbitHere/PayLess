@@ -27,6 +27,6 @@ test('connection screen displays upstream failures and can retry', async ({ page
   }))
   await page.goto('/system')
   await page.getByRole('button', { name: 'Check connections', exact: true }).click()
-  await expect(page.getByRole('alert')).toHaveText('Scraper is unavailable or the request timed out.')
+  await expect(page.getByRole('alert')).toHaveText('We can’t check offers right now. Please try again shortly.')
   await expect(page.getByRole('button', { name: 'Check connections', exact: true })).toBeEnabled()
 })

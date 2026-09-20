@@ -14,7 +14,11 @@ import { BRAND } from '../config/brand'
 
 function RouteChange() {
   const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); document.title = `${pathname === '/wallet' ? 'My Wallet' : pathname === '/results' ? 'Payment Routes' : pathname === '/recent' ? 'Recent Searches' : 'A smarter way to pay'} | ${BRAND.name}` }, [pathname])
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    document.title = BRAND.name
+    document.getElementById('main-content')?.focus({ preventScroll: true })
+  }, [pathname])
   return null
 }
 export default function App() {

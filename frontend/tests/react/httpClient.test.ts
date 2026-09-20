@@ -14,9 +14,16 @@ it('sends distinct correlation IDs and preserves Headers inputs', async () => {
 it('exposes controlled API errors and handles non-JSON failures', async () => {
   const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({ detail: 'Storage unavailable', code: 'PERSISTENCE_UNAVAILABLE' }), { status: 503 }))
   vi.stubGlobal('fetch', fetcher)
-  await expect(requestJson('/api/test')).rejects.toMatchObject({ status: 503, code: 'PERSISTENCE_UNAVAILABLE', message: 'Storage unavailable' })
+  await expect(requestJson('/api/test')).rejects.toMatchObject({ status: 503, code: 'PERSISTENCE_UNAVAILABLE', message: 'Offers are temporarily unavailable. Please try again shortly.' })
   fetcher.mockResolvedValue(new Response('<html>private proxy error</html>', { status: 502 }))
-  await expect(requestJson('/api/test')).rejects.toMatchObject({ status: 502, message: 'The service could not complete the request.' })
+  await expect(requestJson('/api/test')).rejects.toMatchObject({ status: 502, message: 'Service temporarily unavailable. Please try again shortly.' })
+})
+it('does not expose unknown backend exception details and explains unsupported searches', async () => {
+  const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({ detail: 'SQLException: private stack trace', code: 'UNKNOWN' }), { status: 500 }))
+  vi.stubGlobal('fetch', fetcher)
+  await expect(requestJson('/api/test')).rejects.toMatchObject({ message: 'Service temporarily unavailable. Please try again shortly.' })
+  fetcher.mockResolvedValue(new Response(JSON.stringify({ code: 'MERCHANT_UNSUPPORTED', detail: 'private matcher detail' }), { status: 400 }))
+  await expect(requestJson('/api/test')).rejects.toMatchObject({ message: 'This merchant isn’t supported yet. Try Swiggy, Yatra or EaseMyTrip.' })
 })
 it('distinguishes network failures from caller cancellation', async () => {
   vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('private connection detail')))
