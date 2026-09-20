@@ -12,7 +12,11 @@
     "dev:test": "vite --host 127.0.0.1 --mode test",
     "dev:docker": "vite --host 0.0.0.0 --mode docker",
     "build:docker": "tsc -b && vite build --mode docker",
-    "test:boundaries": "tsx --test tests/architecture.test.ts"
+    "test:boundaries": "tsx --test tests/architecture.test.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test:react": "vitest run",
+    "check": "npm run typecheck && npm run lint && npm test && npm run test:react"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
@@ -24,13 +28,21 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.55.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.18.6",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jsdom": "^26.1.0",
     "tsx": "^4.20.5",
     "typescript": "~5.9.2",
-    "vite": "^7.1.7"
+    "typescript-eslint": "^8.70.0",
+    "vite": "^7.1.7",
+    "vitest": "^4.1.11"
   }
 }

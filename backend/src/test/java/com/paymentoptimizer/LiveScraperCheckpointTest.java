@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 
+@org.junit.jupiter.api.Tag("live-scraper")
 @EnabledIfEnvironmentVariable(named = "RUN_LIVE_SCRAPER", matches = "true")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "scraper.base-url=${SCRAPER_BASE_URL:http://127.0.0.1:8000}", "scraper.allow-fixtures=false",

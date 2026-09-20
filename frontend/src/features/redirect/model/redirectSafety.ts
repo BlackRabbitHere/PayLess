@@ -6,6 +6,7 @@ export const approvedProviderDomains = [
 ] as const
 
 export function isAllowedRedirect(value: unknown): value is string {
+  // eslint-disable-next-line no-control-regex -- Reject control characters in untrusted redirect URLs.
   if (typeof value !== 'string' || !/^https:\/\//i.test(value) || /[\s\\\u0000-\u001f]/.test(value)) return false
   try {
     const url = new URL(value)

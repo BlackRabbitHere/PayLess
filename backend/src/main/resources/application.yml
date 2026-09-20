@@ -3,6 +3,19 @@ spring:
     name: payment-optimizer
   profiles:
     default: local
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:15432/payment_optimizer}
+    username: ${DATABASE_USERNAME:payment_optimizer}
+    password: ${DATABASE_PASSWORD:local-development-only}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
   jackson:
     deserialization:
       fail-on-unknown-properties: false
@@ -31,3 +44,10 @@ management:
   endpoint:
     health:
       show-details: never
+
+logging:
+  structured:
+    format:
+      console: logstash
+  level:
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF

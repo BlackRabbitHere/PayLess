@@ -1,13 +1,17 @@
-# Application architecture through Phase 4
+# Application architecture through Phase 5
 
 The workspace root is the payment-optimizer monorepo (its local directory name may differ).
-The frozen scraper was relocated from `Scrapper/scraper` to `scraper` without source or contract edits.
+The frozen scraper was relocated from `Scrapper/scraper` to `scraper`; Phase 5 adds only HTTP correlation and log correlation, tracked in an explicit override manifest.
 `Scrapper/` now contains only ignored machine-local Python tools, caches and the existing virtual environment.
 
 ## Spring MVC
 
 Each feature owns its application, domain, DTO, controller and/or persistence packages as requested.
-Empty future packages have tracked `package-info.java` files. No JPA, JDBC, database driver, migrations or PostgreSQL service is present.
+JPA entities and PostgreSQL access live exclusively in `offers.persistence`. Application services depend on
+`OfferStore`, a domain-owned port. Flyway creates/versions the schema and Hibernate validates it.
+Controller -> application service -> domain port -> persistence/external adapter.
+The persisted reference catalog matches the supported code catalog; expanding merchant/provider support
+requires an accompanying migration and application support.
 
 Controller -> application service -> domain port -> external adapter.
 The `OfferSource` port returns application-owned `OfferBatch`/`Offer` types.
@@ -22,7 +26,7 @@ The mapper preserves decimal strings as BigDecimal, nullable values, timestamps,
 Its application preview serializes amounts as strings. It does not interpret VERIFIED as purchase eligibility.
 
 `GET /api/v1/system/status` calls the scraper health endpoint through a port.
-`GET /actuator/health` checks the backend process independently of the scraper.
+`GET /actuator/health` checks the backend and PostgreSQL independently of scraper availability.
 Upstream unavailability returns 503, malformed responses/other upstream failures return 502,
 and invalid application requests return 400 using ProblemDetail. No automatic retries or fallback fixture responses are added.
 Fixture use is explicit and rejected under the production profile.
@@ -96,3 +100,25 @@ ArchUnit guards controller dependencies and monetary arithmetic placement.
 Redirect actions are generated from a closed backend catalog and validated against exact approved HTTPS destinations.
 Source metadata retains verification timestamps, hashes, terms and fixture markers independently of purchase eligibility.
 React remains unchanged. See [Phase 3 verification and rules](phase3-verification.md) for the supported scope and curl checkpoint.
+
+## Phase 5 persistence and hardening
+
+`OfferAcquisitionService` writes all mapped observations through `OfferStore` before filtering to VERIFIED
+business offers. `PostgresOfferStore` upserts by `source_external_key` and inserts a distinct ScraperRun
+in one transaction. Network requests happen outside that transaction. A failed batch is audited and its ID
+remains the same in the business response. Out-of-order observations cannot roll back current offer data;
+fixture observations cannot replace live ones. Expired observations remain available for auditing but
+eligibility still checks time before generating routes. Persisted offers are not used as an implicit stale cache.
+
+Merchant, MerchantAlias, and Provider are migration-seeded reference records; all five tables have JPA
+schema validation. Offer JSONB contains only the domain offer. Indexed scalar columns support merchant /
+verification lookup, provider lookup, expiry, and refresh maintenance. Wallets are never sent to OfferStore.
+
+JSON logs use Spring MDC for requestId; FastAPI uses a request ContextVar plus a separate scraper run ID.
+Incoming IDs are bounded to 64 ASCII letters/digits/underscore/hyphen, replaced when invalid, and cleared
+after each request. The frontend sends IDs through nginx; CORS also permits/exposes the header for standalone use.
+
+Compose health dependencies order PostgreSQL/FastAPI -> Spring -> nginx. All service URLs use Docker DNS.
+Only nginx and the loopback development PostgreSQL port are published. Default fixture ingestion is explicit;
+production rejects fixtures. Tests are divided into ordinary fixture tests, opt-in real PostgreSQL tests,
+and separately gated live scraper tests. See [Phase 5 verification](phase5-verification.md).

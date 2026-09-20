@@ -25,6 +25,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class TravelIntegrationTest {
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    com.paymentoptimizer.offers.domain.OfferStore store;
     @Autowired TestRestTemplate http;
     @Autowired ObjectMapper json;
     @MockitoBean ScraperAdapter source;

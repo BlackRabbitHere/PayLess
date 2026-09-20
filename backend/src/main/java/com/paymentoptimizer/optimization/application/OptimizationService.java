@@ -41,6 +41,7 @@ public class OptimizationService {
     public record Selection(OptimizeResponse optimization, Map<String, String> routeOptionIds) {}
 
     public Selection optimizeOptions(List<PurchaseOption> options, Wallet wallet) {
+        long optimizationStarted = System.nanoTime();
         if (options.isEmpty()) throw new IllegalArgumentException("At least one priced purchase is required.");
         var acquired = new LinkedHashMap<Merchant, List<OfferBatch>>();
         var contexts = new HashMap<String, PurchaseContext>();
@@ -52,6 +53,10 @@ public class OptimizationService {
             var sources = acquired.computeIfAbsent(context.merchant(), ignored -> acquisition.acquireAvailable(context));
             var generated = generator.generate(context, wallet, sources.stream().flatMap(b -> b.offers().stream()).toList(), clock.instant());
             assessments.addAll(generated.eligibility());
+            org.slf4j.LoggerFactory.getLogger(getClass()).atInfo()
+                    .addKeyValue("merchant", context.merchant()).addKeyValue("purchaseAmount", context.amount())
+                    .addKeyValue("eligibleOffers", generated.eligibility().stream().filter(a -> a.result().eligible()).map(RouteGenerator.Assessment::offerKey).distinct().count())
+                    .addKeyValue("candidateRoutes", generated.candidates().size()).log("routes_generated");
             for (var candidate : generated.candidates()) {
                 String id = option.id().isEmpty() ? candidate.id() : option.id() + ":" + candidate.id();
                 var identified = new RouteCandidate(id, candidate.kind(), candidate.paymentInstrument(), candidate.offers());
@@ -71,6 +76,13 @@ public class OptimizationService {
             batch.errors().forEach(e -> warnings.add(e.code() + ": Offer acquisition incomplete for " + batch.provider() + "."));
         }
         var ranked = optimizer.rank(candidates);
+        org.slf4j.LoggerFactory.getLogger(getClass()).atInfo()
+                .addKeyValue("providersRequested", batches.stream().map(OfferBatch::provider).distinct().toList())
+                .addKeyValue("offersReceived", batches.stream().mapToInt(b -> b.offers().size()).sum())
+                .addKeyValue("candidateRoutes", candidates.size())
+                .addKeyValue("partialFailures", batches.stream().mapToInt(b -> b.errors().size()).sum())
+                .addKeyValue("optimizationDurationMs", (System.nanoTime() - optimizationStarted) / 1_000_000)
+                .log("optimization_completed");
         if (assessments.stream().anyMatch(a -> !a.result().eligible())) {
             warnings.add("Some verified offers are ineligible or have unconfirmed restrictions; see eligibility reasons.");
         }

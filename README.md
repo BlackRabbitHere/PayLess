@@ -1,170 +1,104 @@
-# Payment Optimizer — Phase 4
+# Payment Optimizer — Phase 5
 
-React + TypeScript + Vite + Tailwind, Spring Boot MVC (Java 21), and the frozen FastAPI scraper.
-The existing Routewise demo UI is retained and refactored into feature modules. No PostgreSQL or backend persistence is introduced.
+React + TypeScript, Spring Boot MVC (Java 21), FastAPI, and PostgreSQL with Flyway migrations.
+Business rules remain in the existing query, eligibility, calculation, routing, and optimization modules.
 
-```text
-payment-optimizer/          # this workspace root
-├── frontend/
-├── backend/
-├── scraper/               # frozen source, unchanged
-├── data/                  # fixtures and source hash manifest
-├── docs/
-├── scripts/
-├── docker-compose.yml
-└── README.md
-```
-
-## Local startup (three terminals)
-
-Requires Java 21, Node.js 22.12+ (Node 24 also works), and Python 3.12+. Maven is provided through the wrapper.
-For a fresh checkout, install frontend and scraper dependencies once:
-
-```powershell
-cd frontend
-npm ci
-cd ..
-py -3.12 -m venv scraper/.venv
-./scraper/.venv/Scripts/python.exe -m pip install --require-hashes -r scraper/requirements.lock
-```
-
-The launcher sets PYTHONPATH to the frozen source; an editable install is unnecessary.
-On this existing Windows workspace it can reuse the original Python 3.12 virtual environment under ignored `Scrapper/`.
-
-Terminal 1, from the repository root:
-
-```powershell
-./scripts/start-scraper.ps1 -Profile local -Fixture
-```
-
-Terminal 2:
-
-```powershell
-cd backend
-./mvnw.cmd spring-boot:run
-```
-
-Terminal 3:
-
-```powershell
-cd frontend
-npm run dev
-```
-
-Open [React](http://localhost:5173), [Spring health](http://localhost:8080/actuator/health),
-[FastAPI health](http://localhost:8000/health), and [connection checks](http://localhost:5173/system).
-The local scraper fixture mode is deterministic and clearly labelled. Omit `-Fixture` to use the frozen live acquisition path;
-live behavior depends on provider availability and existing scraper configuration.
-
-On macOS/Linux use `./mvnw`, `python3.12 -m venv scraper/.venv`, and `scraper/.venv/bin/python`.
-Launch the scraper from its directory with
-`APP_ENV=local FIXTURE_DIR=tests/fixtures PYTHONPATH=src .venv/bin/python -m uvicorn payment_scraper.api.app:app --host 127.0.0.1 --port 8000`.
-
-## Environment profiles
-
-| Profile | Spring | React | Scraper |
-|---|---|---|---|
-| local | default; allows labelled fixtures | `npm run dev`, development mode | launcher `-Profile local -Fixture` |
-| test | `SPRING_PROFILES_ACTIVE=test`; tests use isolated HTTP server | `npm run dev:test` | launcher `-Profile test -Fixture` |
-| docker | Compose selects docker; service DNS | `build:docker`, browser reaches localhost:8080 | Compose fixture mount |
-| production | explicit URL and CORS required; fixtures rejected; probe endpoint absent | `npm run build`, same-origin API by default | `APP_ENV=production`, no fixture directory |
-
-Vite reserves `local` as an environment-file suffix, so its development mode represents the local profile.
-The committed frontend `.env` sets `VITE_API_BASE_URL=http://localhost:8080`.
-Copy `frontend/.env.example` to `frontend/.env.local` for local overrides; clear that override before a production build
-or set VITE_API_BASE_URL explicitly at build time. VITE_* values are public and must never hold secrets.
-Vite reads API settings at startup/build time; restart after changes.
-
-Spring configuration:
-
-```yaml
-scraper:
-  base-url: ${SCRAPER_BASE_URL:http://127.0.0.1:8000}
-  connect-timeout: ${SCRAPER_CONNECT_TIMEOUT:5s}
-  read-timeout: ${SCRAPER_READ_TIMEOUT:30s}
-```
-
-For an override in PowerShell, set `$env:SCRAPER_BASE_URL='http://127.0.0.1:8000'` before starting Spring.
-Production also requires `CORS_ALLOWED_ORIGINS` and `SPRING_PROFILES_ACTIVE=production`.
-The root `.env.example` is for Compose; Spring does not automatically load dotenv files.
-
-## Docker local environment
+## One-command startup
 
 ```sh
-docker compose up --build
-docker compose down
+docker compose up
 ```
 
-The same three host ports are exposed. Compose defaults to explicit scraper fixtures and backend fixture acceptance.
-No database service exists. Browser API URLs use localhost, while Spring uses `http://scraper:8000`.
-Docker is a local verification setup, not a production deployment definition.
-For production builds, provide deployment-specific VITE_API_BASE_URL and a same-origin `/api` reverse proxy if the value is empty.
-
-## Verification
-
-```powershell
-python scripts/verify-frozen-scraper.py
-./scripts/verify-phase1.ps1
-cd backend
-./mvnw.cmd -B -ntp verify
-cd ../frontend
-npm test
-npm run build
-npm run test:e2e
-```
-
-The smoke script expects all three local services running and checks all three provider mappings.
-The browser suite uses installed Google Chrome and starts isolated Vite on 15173, Spring on 18080, and a scraper fixture replay on 18000.
-The backend tests start a controlled HTTP server and do not depend on internet providers.
-
-See [architecture](docs/architecture.md) for module boundaries and deferred responsibilities,
-and [verification](docs/phase1-verification.md) for completed checks.
-
-## Phase 2: query to genuine offers
-
-Spring now parses purchase sentences and acquires domain offers from the frozen scraper:
+Open [Routewise](http://localhost:4173). The first run builds the images and applies migrations automatically.
+For a detached start that waits for readiness: `docker compose up -d --build --wait`.
 
 ```text
-"I am paying 500 rs on swigy"
-  -> SWIGGY / FOOD_DELIVERY / INR 500.00 / confidence 0.96
-  -> OfferAcquisitionService -> GYFTR only
-  -> ScraperClient -> FastAPI -> ScrapedOfferDto -> ScraperOfferMapper -> List<Offer>
+Browser :4173 -> nginx frontend :5173 -> Spring :8080 -> FastAPI :8000 -> provider adapters
+                                            |
+                                       PostgreSQL :5432
 ```
 
-The development endpoint is `POST /api/v1/offers/acquisition-check` with
-`{"sentence":"I am paying 500 rs on swigy","forceRefresh":true}`.
-Set `SCRAPER_READ_TIMEOUT=180s` when running this checkpoint against live providers.
-The endpoint is absent in production. It does not rank offers or calculate savings.
+The browser uses same-origin `/api` requests. Spring uses `SCRAPER_BASE_URL=http://scraper:8000`
+and `jdbc:postgresql://postgres:5432/payment_optimizer`. Spring and FastAPI ports are internal to Docker.
+PostgreSQL is exposed on localhost:15432 for development tests. Set `FRONTEND_PORT` or `POSTGRES_PORT`
+in `.env` to change host ports. The defaults avoid Windows port reservations encountered during verification.
+Named volumes preserve database and scraper data across ordinary container restarts.
 
-To run the genuine integration check against FastAPI on port 8000 (live mode):
+The default stack uses labelled saved provider fixtures for deterministic development. Travel fares are still
+provided by `DemoFareProvider`. To explicitly exercise live providers, set `SCRAPER_FIXTURE_DIR=` (empty),
+`SCRAPER_ALLOW_FIXTURES=false`, and configure `TERMS_REVIEWED_PROVIDERS` / `PLAYWRIGHT_ENABLED` as described
+in [scraper source access](scraper/docs/source-access.md). Live access can fail independently per provider.
+Ordinary CI and smoke tests never request live providers.
 
-```powershell
-./scripts/verify-phase2.ps1
+## Smoke checkpoint
+
+```sh
+docker compose --profile smoke run --rm smoke
 ```
 
-This starts an isolated Spring test server, rejects fixtures, checks the actual GyFTR response,
-and verifies cache/force-refresh semantics. See [Phase 2 verification](docs/phase2-verification.md).
+This checks frontend delivery, correlation headers, repeated Swiggy optimization, travel optimization, and
+all three FastAPI fixture providers through the frontend proxy. It fails if the scraper is in live mode.
+Alternatively run `python scripts/smoke.py http://localhost:4173` after starting the stack.
 
-## Phase 3: optimization engine
+## Persistence and observability
 
-`POST /api/optimize/query` now runs query understanding, offer acquisition, eligibility, route generation,
-decimal cost calculation, deterministic ranking, actionable steps and redirect validation inside Spring.
-The optional wallet contains payment metadata only. Responses distinguish pay-now from effective cost and include
-both winning routes, alternatives, source metadata, eligibility reasons and warnings. Provider outages retain direct routes.
+Flyway owns schema changes in `backend/src/main/resources/db/migration/`; Hibernate only validates them.
+The five persisted models are Merchant, MerchantAlias, Provider, Offer, and ScraperRun. Reference merchants,
+aliases, and providers are seeded in V1 to match the supported application catalog.
+`Offer.externalKey` maps to the unique `source_external_key` column. PostgreSQL `ON CONFLICT` upserts
+observations atomically; older observations and synthetic fixtures cannot overwrite newer/live records.
+Each acquisition attempt receives its own audit row, including source failures and cached scraper responses.
+Offer/audit writes share a short transaction after network work. Storage failures return controlled 503 errors.
+Wallet/card credentials and request bodies never enter the persistence port.
 
-```powershell
-curl.exe --fail-with-body -H "Content-Type: application/json" --data-binary "@docs/phase3-request.json" http://localhost:8080/api/optimize/query
+React supplies `X-Request-ID`; Spring validates or creates it, echoes it, propagates it to FastAPI, and includes
+it in JSON logs and scraper-run records. FastAPI keeps its wire `requestId` unchanged and logs it separately
+as `scraperRequestId`. Logs contain acquisition durations/counts, eligibility counts, candidate counts,
+optimization durations, purchase amounts, merchants, providers, and partial-failure counts.
+
+## Automated checks
+
+```sh
+# Backend: ordinary tests use saved FastAPI JSON, no PostgreSQL or provider network needed.
+cd backend
+./mvnw test
+# Windows: .\mvnw.cmd instead of ./mvnw
+
+# PostgreSQL repository tests + all ordinary tests; start Compose postgres first.
+./mvnw -Pdatabase-tests package
+
+cd ../frontend
+npm ci
+npm run check
+npm run build:docker
+# Requires the packaged backend and local PostgreSQL; starts fixture HTTP server + Spring + Vite.
+npx playwright install chrome
+npm run test:e2e
+
+cd ../scraper
+# Python 3.12+, install requirements.lock, package, and pytest/httpx (see CI workflow).
+python -m pytest
 ```
 
-See [Phase 3 API and verification](docs/phase3-verification.md) for the request contract, reproducible checkpoint and supported business rules.
-The React UI now consumes this endpoint. See Phase 4 below.
+`DATABASE_URL`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD` configure standalone Spring and repository tests.
+Use an isolated test database. Defaults match Compose on localhost:15432. Tests delete only rows they create.
+The `test` Spring profile mocks the persistence port; `database-tests` uses real PostgreSQL and Flyway.
+Backend coverage includes queries, mapping/contracts, eligibility, costs, routes, ranking, redirects,
+controllers, resilience, correlation, repository concurrency/rollback, and merchant/travel integration.
+Frontend checks cover architecture/model tests, hooks, components, API failures, and desktop/mobile flows.
 
-## Phase 4: complete merchant and travel journeys
+Live tests require explicit opt-in: Maven `-Plive-scraper` plus `RUN_LIVE_SCRAPER=true`, or Python
+`pytest -m live`. Configure live scraper access before using either. These commands are absent from
+[ordinary CI](.github/workflows/ci.yml).
 
-Home now submits purchases to Spring and renders real optimization responses, including costs, steps, safe links,
-eligibility exclusions, and partial/total offer failures. Zustand persists wallet metadata only.
-Travel at /travel uses a FareProvider port with labeled DemoFareProvider quotes and the same Spring optimization engine.
+## Standalone development
 
-Browser checkpoints cover Swiggy ₹500 → ₹487.50 voucher route and Delhi → Mumbai → fares, offers, wallet and ranked routes.
-Browser verification uses the real Spring application with committed synthetic scraper wire fixtures.
-See [Phase 4 contracts and verification](docs/phase4-verification.md) and [frontend guide](frontend/README.md).
+Start PostgreSQL with `docker compose up -d postgres`. Start the fixture scraper with
+`./scripts/start-scraper.ps1 -Profile local -Fixture`, Spring with `backend/mvnw.cmd spring-boot:run`
+(from `backend`), and Vite with `npm run dev` (from `frontend`). Set frontend `VITE_API_BASE_URL`
+to the standalone Spring URL. The production Spring profile requires database, scraper, and CORS configuration
+and rejects fixture ingestion. The bundled database password is a local-development default.
+
+See [Phase 5 verification](docs/phase5-verification.md), [architecture](docs/architecture.md), and
+[earlier Phase 4 verification](docs/phase4-verification.md). The original scraper freeze remains intact except
+for two explicitly hashed observability edits; `python scripts/verify-frozen-scraper.py` verifies that boundary.

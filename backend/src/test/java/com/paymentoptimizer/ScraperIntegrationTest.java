@@ -32,9 +32,12 @@ import org.springframework.test.context.DynamicPropertySource;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class ScraperIntegrationTest {
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    com.paymentoptimizer.offers.domain.OfferStore store;
     static final AtomicReference<String> body = new AtomicReference<>();
     static final AtomicReference<String> lastRequest = new AtomicReference<>();
     static final AtomicReference<String> lastPath = new AtomicReference<>();
+    static final AtomicReference<String> lastCorrelation = new AtomicReference<>();
     static final AtomicReference<String> lastMethod = new AtomicReference<>();
     static final AtomicInteger status = new AtomicInteger(200);
     static final AtomicInteger calls = new AtomicInteger();
@@ -49,6 +52,7 @@ class ScraperIntegrationTest {
             var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
             server.createContext("/", exchange -> {
                 calls.incrementAndGet();
+                lastCorrelation.set(exchange.getRequestHeaders().getFirst("X-Request-ID"));
                 lastPath.set(exchange.getRequestURI().getPath());
                 lastMethod.set(exchange.getRequestMethod());
                 lastRequest.set(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
@@ -81,6 +85,25 @@ class ScraperIntegrationTest {
             if (stream == null) throw new IOException("Missing contract fixture " + name);
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
+    }
+
+    @Test
+    @org.junit.jupiter.api.extension.ExtendWith(org.springframework.boot.test.system.OutputCaptureExtension.class)
+    void requestIdCrossesHttpBoundariesAndStorageFailureIsControlled(org.springframework.boot.test.system.CapturedOutput output) throws Exception {
+        var headers = new HttpHeaders(); headers.set("X-Request-ID", "browser-correlation-test");
+        var response = http.exchange("/api/optimize/query", HttpMethod.POST,
+                new HttpEntity<>(Map.of("query", "500 on swigy"), headers), String.class);
+        assertThat(response.getHeaders().getFirst("X-Request-ID")).isEqualTo("browser-correlation-test");
+        assertThat(lastCorrelation.get()).isEqualTo("browser-correlation-test");
+        assertThat(output.getOut()).contains("\"message\":\"offers_acquired\"", "\"requestId\":\"browser-correlation-test\"", "scraperDurationMs")
+                .doesNotContain("has already been written");
+        org.mockito.Mockito.verify(store).record(org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.eq("browser-correlation-test"), org.mockito.ArgumentMatchers.anyLong());
+        org.mockito.Mockito.doThrow(new org.springframework.dao.DataAccessResourceFailureException("private database detail"))
+                .when(store).record(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyLong());
+        var failed = http.postForEntity("/api/optimize/query", Map.of("query", "500 on swigy"), String.class);
+        assertThat(failed.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        assertThat(failed.getBody()).contains("PERSISTENCE_UNAVAILABLE").doesNotContain("private database detail");
     }
 
     @Test

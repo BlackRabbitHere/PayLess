@@ -3,6 +3,8 @@ import logging
 from contextvars import ContextVar
 from datetime import UTC, datetime
 
+request_context: ContextVar[str | None] = ContextVar("request_context", default=None)
+
 scrape_context: ContextVar[dict] = ContextVar("scrape_context", default={})
 
 
@@ -34,6 +36,9 @@ class JsonFormatter(logging.Formatter):
         ):
             if hasattr(record, name):
                 data[name] = getattr(record, name)
+        if request_context.get():
+            data["scraperRequestId"] = data.get("requestId")
+            data["requestId"] = request_context.get()
         if record.exc_info:
             data["exception"] = self.formatException(record.exc_info)
         return json.dumps(data, default=str)

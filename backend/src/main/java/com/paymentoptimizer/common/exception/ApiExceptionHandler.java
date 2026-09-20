@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler({org.springframework.dao.DataAccessException.class, org.springframework.transaction.TransactionException.class})
+    ProblemDetail persistence(Exception exception) {
+        org.slf4j.LoggerFactory.getLogger(getClass()).error("persistence_unavailable");
+        var problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE,
+                "Offer storage is temporarily unavailable. Please retry.");
+        problem.setProperty("code", "PERSISTENCE_UNAVAILABLE");
+        return problem;
+    }
     @ExceptionHandler(com.paymentoptimizer.query.domain.QueryUnderstandingException.class)
     ProblemDetail invalidQuery(com.paymentoptimizer.query.domain.QueryUnderstandingException exception) {
         var problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());

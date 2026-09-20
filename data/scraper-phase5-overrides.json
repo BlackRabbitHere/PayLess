@@ -1,0 +1,12 @@
+[
+  {
+    "path": "src/payment_scraper/api/app.py",
+    "sha256": "47af02a0968375a7fe14e078a8e3904c84656f38e5fc4a2d464f8cd9f2e6ec65",
+    "reason": "Phase 5 HTTP correlation middleware and log correlation; wire schema and provider acquisition unchanged."
+  },
+  {
+    "path": "src/payment_scraper/core/logging_config.py",
+    "sha256": "31d38f53c0ee54051c63146230bf5a880dccb95cc27e5822848a30a2f6554133",
+    "reason": "Phase 5 HTTP correlation middleware and log correlation; wire schema and provider acquisition unchanged."
+  }
+]

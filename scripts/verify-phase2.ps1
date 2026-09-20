@@ -11,7 +11,7 @@ Push-Location (Join-Path $repoRoot 'backend')
 try {
     $env:RUN_LIVE_SCRAPER = 'true'
     $env:SCRAPER_BASE_URL = $ScraperUrl
-    & ./mvnw.cmd -B -ntp '-Dtest=LiveScraperCheckpointTest' test
+    & ./mvnw.cmd -B -ntp -Plive-scraper '-Dtest=LiveScraperCheckpointTest' test
     if ($LASTEXITCODE -ne 0) { throw 'The live Phase 2 checkpoint failed. Review Maven output.' }
     Write-Output 'PASS: sentence -> Spring -> live FastAPI -> GyFTR DTO -> domain offers; cache and forceRefresh verified.'
     Write-Output 'Evidence: data/verification/phase2/'

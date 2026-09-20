@@ -17,7 +17,10 @@ class ArchitectureTest {
                 .resideInAnyPackage("org.springframework..", "..integration..", "..controller..", "..persistence..", "..dto..").check(classes);
         noClasses().that().areAnnotatedWith(RestController.class).should().dependOnClassesThat()
                 .resideInAnyPackage("..integration..", "..persistence..", "org.springframework.web.client..").check(classes);
-        noClasses().should().dependOnClassesThat().resideInAnyPackage("jakarta.persistence..", "java.sql..").check(classes);
+        noClasses().that().resideOutsideOfPackage("..persistence..").should().dependOnClassesThat()
+                .resideInAnyPackage("jakarta.persistence..", "java.sql..", "org.springframework.data..").check(classes);
+        noClasses().that().resideInAPackage("..application..").should().dependOnClassesThat()
+                .resideInAnyPackage("..persistence..").check(classes);
         noClasses().that().resideInAPackage("..integration.scraper.client..")
                 .and().haveSimpleName("ScraperClient").should().dependOnClassesThat()
                 .resideInAnyPackage("..query..", "..offers..", "..optimization..", "..wallet..", "..mapper..").check(classes);

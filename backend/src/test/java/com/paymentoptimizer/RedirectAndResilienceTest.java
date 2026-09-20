@@ -48,7 +48,7 @@ class RedirectAndResilienceTest {
             when(source.fetch(provider, "SWIGGY", false)).thenReturn(new OfferBatch(UUID.randomUUID(), "PARTIAL", provider, "SWIGGY", false,
                     List.of(new OfferExample().build()), List.of(), List.of(new OfferBatch.Failure("PARTIAL_RESULT", "test", provider, true))));
         }
-        var results = new OfferAcquisitionService(source, catalog).acquireAvailable(PURCHASE);
+        var results = new OfferAcquisitionService(source, catalog, (batch, id, duration) -> {}).acquireAvailable(PURCHASE);
         assertThat(results).hasSize(3);
         assertThat(results.getFirst().status()).isEqualTo("UNAVAILABLE");
         assertThat(results.getFirst().errors().getFirst().message()).doesNotContain("private details");

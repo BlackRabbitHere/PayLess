@@ -12,7 +12,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**").allowedOrigins(properties.allowedOrigins().toArray(String[]::new))
-                .allowedMethods("GET", "POST", "OPTIONS").allowedHeaders("Content-Type", "Accept")
+                .allowedMethods("GET", "POST", "OPTIONS").allowedHeaders("Content-Type", "Accept", "X-Request-ID").exposedHeaders("X-Request-ID")
                 .maxAge(3600);
     }
 }

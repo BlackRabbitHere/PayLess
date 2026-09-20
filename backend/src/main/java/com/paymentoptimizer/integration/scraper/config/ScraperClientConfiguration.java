@@ -14,6 +14,11 @@ public class ScraperClientConfiguration {
                 .followRedirects(HttpClient.Redirect.NEVER).build();
         var factory = new JdkClientHttpRequestFactory(httpClient);
         factory.setReadTimeout(properties.readTimeout());
-        return builder.baseUrl(properties.baseUrl().toString()).requestFactory(factory).build();
+        return builder.baseUrl(properties.baseUrl().toString()).requestFactory(factory)
+                .requestInterceptor((request, body, execution) -> {
+                    request.getHeaders().set("X-Request-ID",
+                            com.paymentoptimizer.common.observability.RequestCorrelationFilter.currentId());
+                    return execution.execute(request, body);
+                }).build();
     }
 }

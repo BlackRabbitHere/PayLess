@@ -1,2 +1,2 @@
-/** Reserved for offers persistence responsibilities in later phases; no persistence or business rules in Phase 1. */
+/** PostgreSQL adapters and JPA models. Domain and application code depend only on ports. */
 package com.paymentoptimizer.offers.persistence;
