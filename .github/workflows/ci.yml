@@ -27,7 +27,9 @@ jobs:
         run: docker compose up -d --wait postgres
       - name: Backend unit, controller, fixture integration, and PostgreSQL tests
         working-directory: backend
-        run: bash mvnw -B -ntp -Pdatabase-tests package
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -ntp -Pdatabase-tests package
       - name: Frontend types, lint, unit, hook, and component tests
         working-directory: frontend
         run: |
