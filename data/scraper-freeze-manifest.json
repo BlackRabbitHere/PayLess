@@ -289,7 +289,7 @@
   },
   {
     "path": "tests/fixtures/live/easemytrip_easemytrip.json",
-    "sha256": "d907c60c52194a4d1b39779c213e5872023a1aa9d446ac2333e30f8981323e6d"
+    "sha256": "1fbcbffbabb21131c0110393fabada25bb624bebf717fc5e94693df4db75022a"
   },
   {
     "path": "tests/fixtures/live/gyftr_swiggy.html",
@@ -297,7 +297,7 @@
   },
   {
     "path": "tests/fixtures/live/gyftr_swiggy.json",
-    "sha256": "9f6be32446022a5f107e7f16e67748ac1f98980b767858700d39e044d9747868"
+    "sha256": "fa4ddbf3d817aa115c12deb9c0bab53e48c798fb5cf190b2fc894f07752447ea"
   },
   {
     "path": "tests/fixtures/live/yatra_yatra.html",
@@ -305,7 +305,7 @@
   },
   {
     "path": "tests/fixtures/live/yatra_yatra.json",
-    "sha256": "9160a03c2282eac2bdf20f0abc23e120a3247e931de57ea4be30778cac760c38"
+    "sha256": "320c5d5d01422f0c6f959d5c891dfbf93ba157eea45a6ca88d08c13f27942abe"
   },
   {
     "path": "tests/integration/live_assertions.py",

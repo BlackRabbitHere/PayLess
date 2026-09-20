@@ -1,4 +1,9 @@
-# Phase 4 — React MVC and travel
+cd "F:\SpringBoot\Devathon Hackathon"
+
+git ls-files --eol `
+  scraper/tests/fixtures/live/yatra_yatra.html `
+  scraper/tests/fixtures/live/gyftr_swiggy.html `
+  scraper/tests/fixtures/live/easemytrip_easemytrip.html# Phase 4 — React MVC and travel
 
 ## Contracts and boundaries
 
