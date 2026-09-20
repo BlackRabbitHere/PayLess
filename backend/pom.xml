@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>3.5.5</version><relativePath/></parent>
   <groupId>com.paymentoptimizer</groupId><artifactId>payment-optimizer</artifactId><version>0.0.1-SNAPSHOT</version>
-  <name>payment-optimizer</name><description>Payment optimizer modular monolith — Phase 3 optimization engine</description>
+  <name>PayLess</name><description>Smart payment route optimization</description>
   <properties><java.version>21</java.version><excludedTestGroups>live-scraper,repository</excludedTestGroups></properties>
   <dependencies>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-jpa</artifactId></dependency>
