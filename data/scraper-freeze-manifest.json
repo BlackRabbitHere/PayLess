@@ -37,15 +37,15 @@
   },
   {
     "path": "contracts/live_easemytrip_example.json",
-    "sha256": "cfa3a5c0e79f803e3881ce63d09c65ea132880c90dd2df3b1b5707d3ed56edf3"
+    "sha256": "c5768918e7625a2947332a3f6f8d504c3c4f287abe728137bbf3ec06c9994f75"
   },
   {
     "path": "contracts/live_gyftr_example.json",
-    "sha256": "1d570914872ce32a5f0aa6736ea37d48396d36716d5d87b1a3b1704b2f23e1a4"
+    "sha256": "fdb10bf27b22be057f228a397e953a77bbe6e267f5108b72cc4617682aa16732"
   },
   {
     "path": "contracts/live_yatra_example.json",
-    "sha256": "bf3dd1e8efef1a76b63f6ad48436682ab9fa78f8ba5aeb2dae266324ed78e9ae"
+    "sha256": "3ff5413d1265dba5377fd67e304d241bbc4e47627b720e2b83b598c4ff352a4a"
   },
   {
     "path": "contracts/openapi.sha256",
@@ -53,7 +53,7 @@
   },
   {
     "path": "contracts/scraped_offer.schema.json",
-    "sha256": "929faee4cc21e46d5adc388c1a810a856712cefb522015178f2b845d0f9097b8"
+    "sha256": "3b6bd10e6a830cb0d1331b0a7540693eda632b24c75c8fbffb710b74969fc0c5"
   },
   {
     "path": "docs/api-contract.md",
@@ -269,43 +269,43 @@
   },
   {
     "path": "tests/fixtures/contracts/easemytrip_easemytrip.json",
-    "sha256": "ffce2e7c8e24ba348af5b1536815921c9303aa9096902b6211618167967270e7"
+    "sha256": "36dcf439c6cf64597c71d65416b52430f2afc7ae0cc85634c3423c65d745f896"
   },
   {
     "path": "tests/fixtures/contracts/gyftr_swiggy.json",
-    "sha256": "1abce20060f7e7c0b59b8a96528bc12301b9b2ca23f40567609555fb4dd1d65e"
+    "sha256": "6b766c31c180eb3017565c9f5a3c98d1503c52b49d7f452f645f6f73233d2037"
   },
   {
     "path": "tests/fixtures/contracts/openapi.json",
-    "sha256": "a3b97003fc82f98f3ef5c249fa832e34ca4e7164ebc80a676f48157cd522114a"
+    "sha256": "f81d63b19fffd3b7a3b219d1307b72b0535165d56d590e22f0ca343d96ca3f7e"
   },
   {
     "path": "tests/fixtures/contracts/yatra_yatra.json",
-    "sha256": "fa7cf154038ba0bcce7750067eaddbbea62cafb9d04862014f304297c0f4cea1"
+    "sha256": "44b23a280f322fb2b8424ecf888fe4d9ad33f8f97801106b37dba8bc49b2ce71"
   },
   {
     "path": "tests/fixtures/live/easemytrip_easemytrip.html",
-    "sha256": "ff60ac3763452e607382d483699a180964a39c16933e6de04d0df16ef41460fa"
+    "sha256": "bf6e35a1aebf21caa6082632f34af9748851f6017e2777f506c938f272bfaa7c"
   },
   {
     "path": "tests/fixtures/live/easemytrip_easemytrip.json",
-    "sha256": "d34bee58345a77afc742bd05a1a8cc76d3833f32e743dd877cfb04ed7926addd"
+    "sha256": "d907c60c52194a4d1b39779c213e5872023a1aa9d446ac2333e30f8981323e6d"
   },
   {
     "path": "tests/fixtures/live/gyftr_swiggy.html",
-    "sha256": "ff0a0aa6ae5dd6296df5d7fbb224166cb2a81d50e39b3919b068a8c8d7b8320b"
+    "sha256": "beeb9c568a6ca5e383bf94ad5dabb445b6bcee1de8f8447158c98d9be005fefe"
   },
   {
     "path": "tests/fixtures/live/gyftr_swiggy.json",
-    "sha256": "6602d1337cfd491e703abbe36dd2495fb2db3336e5036aa098ce453210174aef"
+    "sha256": "9f6be32446022a5f107e7f16e67748ac1f98980b767858700d39e044d9747868"
   },
   {
     "path": "tests/fixtures/live/yatra_yatra.html",
-    "sha256": "a2614e7663104dc747e29fb9b92c994f6d54da3e12983228e7246a7a8ce17c54"
+    "sha256": "576db116cc4501ff60c2ad6c8ca3c703103810c938afa19ac72c0d6c54198685"
   },
   {
     "path": "tests/fixtures/live/yatra_yatra.json",
-    "sha256": "dbca8904bc6629c82ed6a1fc3d961f7ab2ae245a09d8be6a210133dee11678e4"
+    "sha256": "9160a03c2282eac2bdf20f0abc23e120a3247e931de57ea4be30778cac760c38"
   },
   {
     "path": "tests/integration/live_assertions.py",
